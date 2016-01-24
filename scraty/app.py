@@ -1,30 +1,39 @@
 
 import sys
 import logging
-from tornado.web import Application, RequestHandler
+import os
+from os.path import dirname, join
+from tornado.web import Application, StaticFileHandler, RequestHandler
 from tornado.ioloop import IOLoop
 from tornado.options import define, options, parse_command_line
 
 from .handler import StoryHandler
 from .models import Session, Base
 
+here = dirname(__file__)
 
-class IndexHandler(RequestHandler):
+class MainHandler(RequestHandler):
     def get(self):
-        self.write('Hello World')
+        self.redirect('/index.html')
 
 
 class ScratyApplication(Application):
-
     def __init__(self, db_session=None, debug=False):
         self.db = db_session or Session
         Base.query = self.db.query_property()
+        app_path = os.path.join(here, 'static')
+        node_modules = os.path.join(here, '..', 'node_modules')
         handlers = [
-            ('/', IndexHandler),
+            ('/', MainHandler),
             ('/api/story/?', StoryHandler),
-            ('/api/story/([a-z0-9-]{36})/?', StoryHandler)
+            ('/api/story/([a-z0-9-]{36})/?', StoryHandler),
+            ('/node_modules/(.*)', StaticFileHandler, dict(path=node_modules)),
+            ('/(.*)', StaticFileHandler, dict(path=app_path)),
         ]
-        super().__init__(handlers, debug=debug)
+        settings = {
+            'static_path': app_path
+        }
+        super().__init__(handlers, debug=debug, **settings)
 
 
 def main():
@@ -41,7 +50,6 @@ def main():
         IOLoop.instance().start()
     except KeyboardInterrupt:
         sys.exit('Bye')
-
 
 if __name__ == "__main__":
     main()

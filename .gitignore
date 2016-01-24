@@ -1,1 +1,9 @@
+.DS_Store
 bin/
+parts/
+build/
+develop-eggs/
+.installed.cfg
+*.egg-info/
+*__pycache__/
+*.pyc

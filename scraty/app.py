@@ -16,7 +16,7 @@ class IndexHandler(RequestHandler):
 
 class ScratyApplication(Application):
 
-    def __init__(self, db_session=None, debug_mode=False):
+    def __init__(self, db_session=None, debug=False):
         self.db = db_session or Session
         Base.query = self.db.query_property()
         handlers = [
@@ -24,7 +24,7 @@ class ScratyApplication(Application):
             ('/api/story/?', StoryHandler),
             ('/api/story/([a-z0-9-]{36})/?', StoryHandler)
         ]
-        super().__init__(handlers, debug=debug_mode)
+        super().__init__(handlers, debug=debug)
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
 
     logger = logging.getLogger()
     logger.setLevel(options.debug and logging.DEBUG or logging.WARN)
-    app = ScratyApplication(debug_mode=options.debug)
+    app = ScratyApplication(debug=options.debug)
     app.listen(options.port)
     try:
         print('Starting on http://localhost:' + str(options.port))

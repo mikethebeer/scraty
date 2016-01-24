@@ -1,12 +1,17 @@
 
 import sys
 import logging
-from tornado.web import Application
+from tornado.web import Application, RequestHandler
 from tornado.ioloop import IOLoop
 from tornado.options import define, options, parse_command_line
 
 from .handler import StoryHandler
 from .models import Session, Base
+
+
+class IndexHandler(RequestHandler):
+    def get(self):
+        self.write('Hello World')
 
 
 class ScratyApplication(Application):
@@ -15,7 +20,9 @@ class ScratyApplication(Application):
         self.db = db_session or Session
         Base.query = self.db.query_property()
         handlers = [
-            ('/', StoryHandler),
+            ('/', IndexHandler),
+            ('/api/story/?', StoryHandler),
+            ('/api/story/([a-z0-9-]{36})/?', StoryHandler)
         ]
         super().__init__(handlers, debug=debug_mode)
 

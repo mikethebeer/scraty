@@ -3,7 +3,10 @@ from tornado.web import RequestHandler
 
 
 class BaseHandler(RequestHandler):
-    pass
+
+    @property
+    def db(self):
+        return self.application.db
 
 
 class StoryHandler(BaseHandler):

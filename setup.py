@@ -3,7 +3,8 @@ from setuptools import setup
 
 
 requirements = [
-    'tornado'
+    'tornado',
+    'crate [sqlalchemy]'
 ]
 
 

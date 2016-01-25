@@ -10,6 +10,7 @@ from lovely.testlayers.layer import CascadedLayer
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from scraty.app import ScratyApplication
+from scraty.models import Story, Task
 
 
 here = os.path.dirname(os.path.abspath(__file__))
@@ -68,23 +69,9 @@ test_layer = CascadedLayer('all', crate_layer, tornado_layer)
 
 
 def setUp(test):
-    # Base.metadata.create_all(bind=engine) foreign key error :(
-
     conn = engine.connect()
-    conn.execute('''
-create table stories (
-    id string primary key,
-    text string,
-    link string
-) with (number_of_replicas = 0)''')
-    conn.execute('''
-create table tasks (
-    id string primary key,
-    story_id string,
-    text string,
-    user string,
-    user_id string
-) with (number_of_replicas = 0)''')
+    conn.execute(Story.create_table)
+    conn.execute(Task.create_table)
 
     def refresh(table):
         conn.execute('refresh table {table}'.format(table=table))

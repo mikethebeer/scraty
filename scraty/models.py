@@ -21,6 +21,13 @@ def gen_id():
 class Story(Base):
     __tablename__ = 'stories'
 
+    create_table = '''
+create table if not exists stories (
+    id string primary key,
+    text string,
+    link string
+) with (number_of_replicas = 0)'''
+
     id = sa.Column(Unicode, primary_key=True, default=gen_id)
     text = sa.Column(Unicode)
     link = sa.Column(Unicode)
@@ -41,6 +48,15 @@ class Story(Base):
 class Task(Base):
     __tablename__ = 'tasks'
 
+    create_table = '''
+create table if not exists tasks (
+    id string primary key,
+    story_id string,
+    text string,
+    user string,
+    user_id string
+) with (number_of_replicas = 0)'''
+
     id = sa.Column(Unicode, primary_key=True, default=gen_id)
     text = sa.Column(Unicode)
     user = sa.Column(Unicode)
@@ -60,7 +76,9 @@ class Task(Base):
 
 
 def main():
-    Base.metadata.create_all(bind=engine)
+    conn = engine.connect()
+    conn.execute(Story.create_table)
+    conn.execute(Task.create_table)
     from IPython import embed
     embed()
 

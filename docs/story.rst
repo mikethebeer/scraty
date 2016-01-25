@@ -97,3 +97,12 @@ List all tasks::
         ]
     }
 
+Delete a task::
+
+    >>> client.delete('/api/tasks/' + task_id)
+    <Response [200]>
+
+Delete a story::
+
+    >>> client.delete('/api/stories/' + story_id)
+    <Response [200]>

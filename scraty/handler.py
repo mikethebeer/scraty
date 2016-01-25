@@ -117,7 +117,7 @@ class TaskHandler(BaseHandler):
             tasks = [t.to_dict() for t in Task.query.all()]
             self.write({'tasks': tasks})
 
-    def delte(self, id):
+    def delete(self, id):
         Task.query.filter(Task.id == id).delete()
         self.db.commit()
         self.write({'status': 'success'})

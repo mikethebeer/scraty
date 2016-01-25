@@ -25,10 +25,24 @@ class BaseHandler(RequestHandler):
 
 class StoryHandler(BaseHandler):
 
-    def post(self):
-        data = self.json_body()
-        story = Story(text=data['text'])
-        self.db.add(story)
+    @staticmethod
+    def update(id, data):
+        story = Story.query.filter(Story.id == id).one()
+        for key, value in data.items():
+            if hasattr(story, key):
+                setattr(story, key, value)
+        return story
+
+    @staticmethod
+    def new_story(data):
+        return Story(**data)
+
+    def post(self, id=None):
+        if id:
+            story = self.update(id, self.json_body())
+        else:
+            story = Story(**self.json_body())
+            self.db.add(story)
         self.db.commit()
         self.write({
             'status': 'success',
@@ -50,7 +64,7 @@ class StoryHandler(BaseHandler):
 
 class TaskHandler(BaseHandler):
 
-    def post(self):
+    def post(self, id=None):
         data = self.json_body()
         task = Task(text=data['text'],
                     story_id=data['story_id'],

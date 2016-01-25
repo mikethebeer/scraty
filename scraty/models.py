@@ -1,6 +1,6 @@
 
 import sqlalchemy as sa
-from sqlalchemy.types import Unicode
+from sqlalchemy.types import Unicode, Integer
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from uuid import uuid4
@@ -24,6 +24,7 @@ class Story(Base):
     create_table = '''
 create table if not exists stories (
     id string primary key,
+    position integer,
     text string,
     link string
 ) with (number_of_replicas = 0)'''
@@ -31,6 +32,7 @@ create table if not exists stories (
     id = sa.Column(Unicode, primary_key=True, default=gen_id)
     text = sa.Column(Unicode)
     link = sa.Column(Unicode)
+    position = sa.Column(Integer, default=1)
 
     tasks = relationship('Task', back_populates='story')
 
@@ -42,6 +44,7 @@ create table if not exists stories (
             'id': self.id,
             'text': self.text,
             'tasks': [t.to_dict() for t in self.tasks],
+            'position': self.position,
             'link': self.link,
         }
 
@@ -80,8 +83,6 @@ def main():
     conn = engine.connect()
     conn.execute(Story.create_table)
     conn.execute(Task.create_table)
-    from IPython import embed
-    embed()
 
 
 if __name__ == "__main__":

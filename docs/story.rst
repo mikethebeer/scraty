@@ -6,6 +6,7 @@ Add a story::
         "data": {
             "id": "...",
             "link": null,
+            "position": 1,
             "tasks": [],
             "text": "story 1"
         },
@@ -25,10 +26,27 @@ List all stories::
             {
                 "id": "...",
                 "link": null,
+                "position": 1,
                 "tasks": [],
                 "text": "story 1"
             }
         ]
+    }
+
+Update a story::
+
+    >>> data = {"position": 2}
+    >>> r = client.post('/api/stories/' + story_id, data=json.dumps(data))
+    >>> p(r.content)
+    {
+        "data": {
+            "id": "...",
+            "link": null,
+            "position": 2,
+            "tasks": [],
+            "text": "story 1"
+        },
+        "status": "success"
     }
 
 Add a task::

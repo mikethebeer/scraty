@@ -7,3 +7,6 @@ develop-eggs/
 *.egg-info/
 *__pycache__/
 *.pyc
+node_modules/
+scraty/static/app/**/*.js
+scraty/static/app/**/*.js.map

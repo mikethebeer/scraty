@@ -86,8 +86,13 @@ create table tasks (
     user_id string
 ) with (number_of_replicas = 0)''')
 
+    def refresh(table):
+        conn.execute('refresh table {table}'.format(table=table))
+
     test.globs['client'] = Session(tornado_layer.uri)
-    test.globs['j'] = printjson
+    test.globs['p'] = printjson
+    test.globs['json'] = json
+    test.globs['refresh'] = refresh
 
 
 def tearDown(test):
@@ -95,9 +100,10 @@ def tearDown(test):
 
 
 def test_suite():
+    flags = (doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
     suite = unittest.TestSuite()
     s = doctest.DocFileSuite(
-        'docs/story.rst', setUp=setUp, tearDown=tearDown)
+        'docs/story.rst', setUp=setUp, tearDown=tearDown, optionflags=flags)
     s.layer = test_layer
     suite.addTest(s)
     return suite

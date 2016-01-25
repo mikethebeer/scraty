@@ -1,8 +1,12 @@
 
 import json
+import logging
 from tornado.web import RequestHandler
 
 from .models import Story
+
+
+logger = logging.getLogger(__file__)
 
 
 class BaseHandler(RequestHandler):

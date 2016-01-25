@@ -3,6 +3,7 @@ import json
 import logging
 from functools import wraps
 from tornado.web import RequestHandler, HTTPError
+from tornado.websocket import WebSocketHandler, WebSocketClosedError
 
 import sqlalchemy.orm.exc
 
@@ -10,6 +11,34 @@ from .models import Story, Task
 
 
 logger = logging.getLogger(__file__)
+
+
+class SocketHandler(WebSocketHandler):
+
+    clients = set()
+
+    def open(self):
+        SocketHandler.clients.add(self)
+
+    def on_message(self, message):
+        pass
+
+    def on_close(self):
+        SocketHandler.clients.remove(self)
+
+    @classmethod
+    def send_message(cls, object_type, action, obj):
+        message = {
+            'action': action,
+            'object_type': object_type,
+            'object': obj.to_dict()
+        }
+        message = json.dumps(message)
+        for client in cls.clients:
+            try:
+                client.write_message(message)
+            except WebSocketClosedError:
+                cls.clients.remove(client)
 
 
 class BaseHandler(RequestHandler):
@@ -44,9 +73,12 @@ def handle_exception(f):
         except sqlalchemy.orm.exc.NoResultFound:
             raise HTTPError(404)
         except Exception as e:
+            message = hasattr(e, 'message') and e.message or str(e)
+            if not message:
+                raise e
             self.write({
                 'status': 'failure',
-                'message': hasattr(e, 'message') and e.message or str(e)
+                'message': message
             })
     return wrapper
 
@@ -62,9 +94,11 @@ class StoryHandler(BaseHandler):
     def post(self, id=None):
         if id:
             story = self.update(id, self.json_body())
+            SocketHandler.send_message('story', 'updated', story)
         else:
             story = Story(**self.json_body())
             self.db.add(story)
+            SocketHandler.send_message('story', 'added', story)
         self.db.commit()
         self.write({
             'status': 'success',
@@ -81,9 +115,11 @@ class StoryHandler(BaseHandler):
             self.write({'stories': stories})
 
     def delete(self, id):
-        Story.query.filter(Story.id == id).delete()
+        story = Story.query.filter(Story.id == id).one()
+        self.db.delete(story)
         Task.query.filter(Task.story_id == id).delete()
         self.db.commit()
+        SocketHandler.send_message('story', 'deleted', story)
         self.write({'status': 'success'})
 
 
@@ -98,9 +134,11 @@ class TaskHandler(BaseHandler):
     def post(self, id=None):
         if id:
             task = self.update_task(id, self.json_body())
+            SocketHandler.send_message('task', 'updated', task)
         else:
             task = Task(**self.json_body())
             self.db.add(task)
+            SocketHandler.send_message('task', 'added', task)
 
         self.db.commit()
         self.write({
@@ -118,6 +156,8 @@ class TaskHandler(BaseHandler):
             self.write({'tasks': tasks})
 
     def delete(self, id):
-        Task.query.filter(Task.id == id).delete()
+        task = Task.query.filter(Task.id == id).one()
+        self.db.delete(task)
         self.db.commit()
+        SocketHandler.send_message('task', 'deleted', task)
         self.write({'status': 'success'})

@@ -75,7 +75,8 @@ create table if not exists tasks (
         return {
             'id': self.id,
             'text': self.text,
-            'user': self.user
+            'user': self.user,
+            'story_id': self.story_id
         }
 
 

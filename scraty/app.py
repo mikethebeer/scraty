@@ -7,7 +7,7 @@ from tornado.web import Application, StaticFileHandler, RequestHandler
 from tornado.ioloop import IOLoop
 from tornado.options import define, options, parse_command_line
 
-from .handler import StoryHandler, TaskHandler
+from .handler import StoryHandler, TaskHandler, SocketHandler
 from .models import Session, Base
 
 here = dirname(__file__)
@@ -26,6 +26,7 @@ class ScratyApplication(Application):
         bower_components = os.path.join(here, '..', 'bower_components')
         handlers = [
             ('/', MainHandler),
+            ('/websocket/?', SocketHandler),
             ('/api/stories/?', StoryHandler),
             ('/api/stories/([a-z0-9-]{36})/?', StoryHandler),
             ('/api/tasks/?', TaskHandler),

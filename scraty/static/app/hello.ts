@@ -1,23 +1,19 @@
 /// <reference path="jquery.d.ts" />
 
-class Company {
-  constructor(name:string)
-	{
-		this.name=name;
-	}
-	name: string;
+class BackendService {
+
+    public _host: string = "http://localhost:8080";
+
+    constructor() { }
+
+    public getAllTasks() {
+        return $.get( "api/tasks");
+    }
 }
 
-function greeter (company:Company){
-	return "hallo "+company.name;
-}
-
-var company=new Company("Crate");
 
 $(document).ready(function(){
-    var message = greeter(company);
-    $("#status").text(message);
-
+    var service = new BackendService();
     var ws = new WebSocket("ws://localhost:8080/websocket");
     ws.onopen = function() {
         ws.send("Hello, world");
@@ -25,4 +21,12 @@ $(document).ready(function(){
     ws.onmessage = function (evt) {
         alert(evt.data);
     };
+
+    service.getAllTasks().done(function(result){
+        $("#status").text(JSON.stringify(result));
+    }).fail(function(){
+
+    }).always(function(){
+
+    });
 });

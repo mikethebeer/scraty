@@ -23,15 +23,19 @@ class BaseHandler(RequestHandler):
             raise
 
 
+def update_from_dict(obj, d):
+    for key, value in d.items():
+        if hasattr(obj, key):
+            setattr(obj, key, value)
+    return obj
+
+
 class StoryHandler(BaseHandler):
 
     @staticmethod
     def update(id, data):
         story = Story.query.filter(Story.id == id).one()
-        for key, value in data.items():
-            if hasattr(story, key):
-                setattr(story, key, value)
-        return story
+        return update_from_dict(story, data)
 
     @staticmethod
     def new_story(data):
@@ -59,17 +63,24 @@ class StoryHandler(BaseHandler):
 
     def delete(self, id):
         Story.query.filter(Story.id == id).delete()
+        self.db.commit()
         self.write({'status': 'success'})
 
 
 class TaskHandler(BaseHandler):
 
+    @staticmethod
+    def update_task(id, data):
+        task = Task.query.filter(Task.id == id).one()
+        return update_from_dict(task, data)
+
     def post(self, id=None):
-        data = self.json_body()
-        task = Task(text=data['text'],
-                    story_id=data['story_id'],
-                    user=data.get('user'))
-        self.db.add(task)
+        if id:
+            task = self.update_task(id, self.json_body())
+        else:
+            task = Task(**self.json_body())
+            self.db.add(task)
+
         self.db.commit()
         self.write({
             'status': 'success',
@@ -86,4 +97,5 @@ class TaskHandler(BaseHandler):
 
     def delte(self, id):
         Task.query.filter(Task.id == id).delete()
+        self.db.commit()
         self.write({'status': 'success'})

@@ -29,6 +29,7 @@ class ScratyApplication(Application):
             ('/api/stories/?', StoryHandler),
             ('/api/stories/([a-z0-9-]{36})/?', StoryHandler),
             ('/api/tasks/?', TaskHandler),
+            ('/api/tasks/([a-z0-9-]{36})/?', TaskHandler),
             ('/node_modules/(.*)', StaticFileHandler, dict(path=node_modules)),
             ('/(.*)', StaticFileHandler, dict(path=app_path)),
         ]

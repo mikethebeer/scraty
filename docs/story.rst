@@ -63,6 +63,24 @@ Add a task::
         "status": "success"
     }
 
+    >>> task_id = r.json()['data']['id']
+    >>> refresh('tasks')
+
+
+Update a task::
+
+    >>> data = {'text': 'task 1.1'}
+    >>> r = client.post('/api/tasks/' + task_id, data=json.dumps(data))
+    >>> p(r.content)
+    {
+        "data": {
+            "id": "...",
+            "text": "task 1.1",
+            "user": "username"
+        },
+        "status": "success"
+    }
+
     >>> refresh('tasks')
 
 List all tasks::
@@ -73,8 +91,9 @@ List all tasks::
         "tasks": [
             {
                 "id": "...",
-                "text": "task 1",
+                "text": "task 1.1",
                 "user": "username"
             }
         ]
     }
+

@@ -1,6 +1,7 @@
 
 import json
 import logging
+from functools import wraps
 from tornado.web import RequestHandler
 
 from .models import Story, Task
@@ -27,7 +28,23 @@ def update_from_dict(obj, d):
     for key, value in d.items():
         if hasattr(obj, key):
             setattr(obj, key, value)
+        else:
+            raise ValueError(
+                "Object {0} doesn't have a property named '{1}'".format(obj, key))
     return obj
+
+
+def exception_to_json(f):
+    @wraps(f)
+    def wrapper(self, *args, **kwargs):
+        try:
+            f(self, *args, **kwargs)
+        except Exception as e:
+            self.write({
+                'status': 'failure',
+                'message': hasattr(e, 'message') and e.message or str(e)
+            })
+    return wrapper
 
 
 class StoryHandler(BaseHandler):
@@ -41,6 +58,7 @@ class StoryHandler(BaseHandler):
     def new_story(data):
         return Story(**data)
 
+    @exception_to_json
     def post(self, id=None):
         if id:
             story = self.update(id, self.json_body())
@@ -74,6 +92,7 @@ class TaskHandler(BaseHandler):
         task = Task.query.filter(Task.id == id).one()
         return update_from_dict(task, data)
 
+    @exception_to_json
     def post(self, id=None):
         if id:
             task = self.update_task(id, self.json_body())

@@ -41,6 +41,7 @@ create table if not exists stories (
         return {
             'id': self.id,
             'text': self.text,
+            'tasks': [t.to_dict() for t in self.tasks],
             'link': self.link,
         }
 

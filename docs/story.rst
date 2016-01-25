@@ -6,6 +6,7 @@ Add a story::
         "data": {
             "id": "...",
             "link": null,
+            "tasks": [],
             "text": "story 1"
         },
         "status": "success"
@@ -24,6 +25,7 @@ List all stories::
             {
                 "id": "...",
                 "link": null,
+                "tasks": [],
                 "text": "story 1"
             }
         ]

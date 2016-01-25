@@ -81,6 +81,7 @@ class StoryHandler(BaseHandler):
 
     def delete(self, id):
         Story.query.filter(Story.id == id).delete()
+        Task.query.filter(Task.story_id == id).delete()
         self.db.commit()
         self.write({'status': 'success'})
 

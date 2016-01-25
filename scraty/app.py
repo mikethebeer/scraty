@@ -2,15 +2,16 @@
 import sys
 import logging
 import os
-from os.path import dirname, join
+from os.path import dirname
 from tornado.web import Application, StaticFileHandler, RequestHandler
 from tornado.ioloop import IOLoop
 from tornado.options import define, options, parse_command_line
 
-from .handler import StoryHandler
+from .handler import StoryHandler, TaskHandler
 from .models import Session, Base
 
 here = dirname(__file__)
+
 
 class MainHandler(RequestHandler):
     def get(self):
@@ -25,8 +26,9 @@ class ScratyApplication(Application):
         node_modules = os.path.join(here, '..', 'node_modules')
         handlers = [
             ('/', MainHandler),
-            ('/api/story/?', StoryHandler),
-            ('/api/story/([a-z0-9-]{36})/?', StoryHandler),
+            ('/api/stories/?', StoryHandler),
+            ('/api/stories/([a-z0-9-]{36})/?', StoryHandler),
+            ('/api/tasks/?', TaskHandler),
             ('/node_modules/(.*)', StaticFileHandler, dict(path=node_modules)),
             ('/(.*)', StaticFileHandler, dict(path=app_path)),
         ]

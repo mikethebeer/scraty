@@ -10,7 +10,6 @@ from lovely.testlayers.layer import CascadedLayer
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from scraty.app import ScratyApplication
-from scraty.models import Base
 
 
 here = os.path.dirname(os.path.abspath(__file__))
@@ -81,6 +80,7 @@ create table stories (
     conn.execute('''
 create table tasks (
     id string primary key,
+    story_id string,
     text string,
     user string,
     user_id string

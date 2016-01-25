@@ -51,6 +51,13 @@ class Task(Base):
     def __repr__(self):
         return '<Task({text})>'.format(text=self.text[:20])
 
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'text': self.text,
+            'user': self.user
+        }
+
 
 def main():
     Base.metadata.create_all(bind=engine)

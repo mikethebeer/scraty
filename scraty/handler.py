@@ -2,7 +2,9 @@
 import json
 import logging
 from functools import wraps
-from tornado.web import RequestHandler
+from tornado.web import RequestHandler, HTTPError
+
+import sqlalchemy.orm.exc
 
 from .models import Story, Task
 
@@ -34,11 +36,13 @@ def update_from_dict(obj, d):
     return obj
 
 
-def exception_to_json(f):
+def handle_exception(f):
     @wraps(f)
     def wrapper(self, *args, **kwargs):
         try:
             f(self, *args, **kwargs)
+        except sqlalchemy.orm.exc.NoResultFound:
+            raise HTTPError(404)
         except Exception as e:
             self.write({
                 'status': 'failure',
@@ -54,11 +58,7 @@ class StoryHandler(BaseHandler):
         story = Story.query.filter(Story.id == id).one()
         return update_from_dict(story, data)
 
-    @staticmethod
-    def new_story(data):
-        return Story(**data)
-
-    @exception_to_json
+    @handle_exception
     def post(self, id=None):
         if id:
             story = self.update(id, self.json_body())
@@ -71,6 +71,7 @@ class StoryHandler(BaseHandler):
             'data': story.to_dict()
         })
 
+    @handle_exception
     def get(self, id=None):
         if id:
             story = Story.query.filter(Story.id == id).one()
@@ -93,7 +94,7 @@ class TaskHandler(BaseHandler):
         task = Task.query.filter(Task.id == id).one()
         return update_from_dict(task, data)
 
-    @exception_to_json
+    @handle_exception
     def post(self, id=None):
         if id:
             task = self.update_task(id, self.json_body())
@@ -107,6 +108,7 @@ class TaskHandler(BaseHandler):
             'data': task.to_dict()
         })
 
+    @handle_exception
     def get(self, id=None):
         if id:
             task = Task.query.filter(Task.id == id).one()

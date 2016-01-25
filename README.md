@@ -17,6 +17,10 @@ To bootstrap the app simply run `npm` in this scraty folder:
 bin/npm install
 ```
 
+```bash
+bin/bower install jquery jquery.ui
+```
+
 ## Usage
 
 The app is served on defaul-port `8080` by running:

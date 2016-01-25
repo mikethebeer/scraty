@@ -23,14 +23,14 @@ class ScratyApplication(Application):
         self.db = db_session or Session
         Base.query = self.db.query_property()
         app_path = os.path.join(here, 'static')
-        node_modules = os.path.join(here, '..', 'node_modules')
+        bower_components = os.path.join(here, '..', 'bower_components')
         handlers = [
             ('/', MainHandler),
             ('/api/stories/?', StoryHandler),
             ('/api/stories/([a-z0-9-]{36})/?', StoryHandler),
             ('/api/tasks/?', TaskHandler),
             ('/api/tasks/([a-z0-9-]{36})/?', TaskHandler),
-            ('/node_modules/(.*)', StaticFileHandler, dict(path=node_modules)),
+            ('/bower_components/(.*)', StaticFileHandler, dict(path=bower_components)),
             ('/(.*)', StaticFileHandler, dict(path=app_path)),
         ]
         settings = {

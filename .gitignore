@@ -8,5 +8,6 @@ develop-eggs/
 *__pycache__/
 *.pyc
 node_modules/
+bower_components/
 scraty/static/app/**/*.js
 scraty/static/app/**/*.js.map

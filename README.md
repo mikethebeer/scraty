@@ -28,3 +28,9 @@ The app is served on defaul-port `8080` by running:
 ```bash
 bin/app
 ```
+
+## Features
+
+* increment stars
+* multi select (drag & drop, delete, etc.)
+* keyboard shortcuts

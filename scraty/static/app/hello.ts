@@ -3,8 +3,8 @@
 /// <reference path="jqueryui.d.ts"/>
 import {DataService} from './data_service';
 import {Story} from './story';
+import {Task} from './task';
 import ko = require('knockout');
-
 
 class BoardViewModel {
     stories: KnockoutObservableArray<Story>;
@@ -31,6 +31,7 @@ class BoardViewModel {
 
 
 export class App {
+
     start() {
         $(document).ready(function() {
             var service = new DataService();
@@ -61,8 +62,21 @@ export class App {
 
             service.getAllStories().done(result => {
                 vm.stories(result.stories);
+
+                $( ".task" ).draggable({cursor: "move"});
+                $( ".state" ).droppable({
+                    accept: ".task",
+                    drop: function( event, ui ) {
+                        changeState( ui.draggable, +$(this).attr('state') );
+                    }
+                });
             });
 
+            function changeState(item:JQuery, state:number) {
+                var id = item.attr('id');
+                var task = {"id": id, "state": state};
+                service.updateTask(task);
+            }
         });
     }
 }

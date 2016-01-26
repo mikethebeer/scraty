@@ -46,7 +46,7 @@ export class DataService {
     }
 
     public updateTask(task:Task) : JQueryPromise<any> {
-        return $.post( "api/tasks" + task.id, JSON.stringify(task));
+        return $.post( "api/tasks/" + task.id, JSON.stringify(task));
     }
 
     public deleteTask(task:Task) : JQueryPromise<any> {

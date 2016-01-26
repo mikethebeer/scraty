@@ -49,7 +49,12 @@ export class App {
                         vm.stories.push(data.object)
                         break;
                     case 'deleted':
-                        vm.stories.remove(data.object)
+                        for (var i = 0; i < vm.stories().length; i++) {
+                            var story = vm.stories()[i];
+                            if (story.id == data.object.id) {
+                                vm.stories.remove(story)
+                            }
+                        }
                         break;
                 }
             };

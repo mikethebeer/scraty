@@ -94,12 +94,13 @@ class StoryHandler(BaseHandler):
     def post(self, id=None):
         if id:
             story = self.update(id, self.json_body())
-            SocketHandler.send_message('story', 'updated', story)
+            action = 'updated'
         else:
             story = Story(**self.json_body())
             self.db.add(story)
-            SocketHandler.send_message('story', 'added', story)
+            action = 'added'
         self.db.commit()
+        SocketHandler.send_message('story', action, story)
         self.write({
             'status': 'success',
             'data': story.to_dict()
@@ -134,13 +135,13 @@ class TaskHandler(BaseHandler):
     def post(self, id=None):
         if id:
             task = self.update_task(id, self.json_body())
-            SocketHandler.send_message('task', 'updated', task)
+            action = 'updated'
         else:
             task = Task(**self.json_body())
+            action = 'added'
             self.db.add(task)
-            SocketHandler.send_message('task', 'added', task)
-
         self.db.commit()
+        SocketHandler.send_message('task', action, task)
         self.write({
             'status': 'success',
             'data': task.to_dict()

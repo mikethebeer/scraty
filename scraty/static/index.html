@@ -3,14 +3,31 @@
   <head>
     <meta charset="utf-8" />
     <title>Scraty Frontpage</title>
+    <link rel="stylesheet" href="css/style.css" type="text/css" media="all">
     <script type="text/javascript" src="../../bower_components/requirejs/require.js" data-main="app/requireConfig" ></script>
   </head>
 
   <body>
     <table id="board">
+        <thead>
+            <tr>
+                <th>STORIES</th>
+                <th></th>
+                <th>Todo</th>
+                <th>In Progress</th>
+                <th>Verify</th>
+                <th>Done</th>
+            </tr>
+        </thead>
         <tbody data-bind="foreach: stories">
             <tr>
                 <td data-bind="text: text"></td>
+                <td></td>
+                <td data-bind="foreach: tasks">
+                    <div class="task">
+                        <span data-bind="text: text"></span>
+                    </div>
+                </td>
             </tr>
         </tbody>
     </table>

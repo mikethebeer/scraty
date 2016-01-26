@@ -10,8 +10,9 @@ class BoardViewModel {
     stories: KnockoutObservableArray<Story>;
     private service: DataService;
 
-    constructor(service: DataService, stories: Story[]) {
-        this.stories = ko.observableArray(stories);
+    constructor(service: DataService) {
+        var arr : Story[] = [];
+        this.stories = ko.observableArray(arr);
         this.service = service;
 
         // WTF: http://stackoverflow.com/questions/12767128/typescript-wrong-context-this
@@ -21,10 +22,6 @@ class BoardViewModel {
     removeStory(story: Story) {
         this.stories.remove(story);
         this.service.deleteStory(story);
-    }
-
-    foo() {
-        console.log(this.stories.pop());
     }
 
     addStory(story: Story) {
@@ -37,17 +34,30 @@ export class App {
     start() {
         $(document).ready(function() {
             var service = new DataService();
+            var vm = new BoardViewModel(service)
+            ko.applyBindings(vm);
+
             var ws = new WebSocket("ws://localhost:8080/websocket");
             ws.onopen = function() {
                 ws.send("Hello, world");
             };
             ws.onmessage = function (evt) {
-                alert(evt.data);
+                var data = JSON.parse(evt.data);
+                console.log(data);
+                switch (data.action) {
+                    case 'added':
+                        vm.stories.push(data.object)
+                        break;
+                    case 'deleted':
+                        vm.stories.remove(data.object)
+                        break;
+                }
             };
 
             service.getAllStories().done(result => {
-                ko.applyBindings(new BoardViewModel(service, result.stories));
+                vm.stories(result.stories);
             });
+
         });
     }
 }

@@ -1,9 +1,9 @@
 import {Task} from './task';
 
 export interface Story {
-    id?: string;
+    id: string;
     link?: string;
-    position?: number;
-    text?: string;
-    tasks?: Task[];
+    position: number;
+    text: string;
+    tasks: Task[];
 }

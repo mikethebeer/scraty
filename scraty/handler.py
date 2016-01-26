@@ -112,7 +112,8 @@ class StoryHandler(BaseHandler):
             story = Story.query.filter(Story.id == id).one()
             self.write({'story': story.to_dict()})
         else:
-            stories = [s.to_dict() for s in Story.query.all()]
+            q = Story.query.order_by(Story.position)
+            stories = [s.to_dict() for s in q.all()]
             self.write({'stories': stories})
 
     def delete(self, id):

@@ -1,13 +1,18 @@
+<!DOCTYPE html>
 <html>
-
   <head>
+    <meta charset="utf-8" />
     <title>Scraty Frontpage</title>
     <script type="text/javascript" src="../../bower_components/requirejs/require.js" data-main="app/requireConfig" ></script>
   </head>
 
   <body>
-    <div id="status">Loading...</div>
-    <div id="tasks"></div>
+    <table id="board">
+        <tbody data-bind="foreach: stories">
+            <tr>
+                <td data-bind="text: text"></td>
+            </tr>
+        </tbody>
+    </table>
   </body>
-
 </html>

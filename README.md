@@ -18,7 +18,7 @@ bin/npm install bower
 ```
 
 ```bash
-bin/bower install jquery jquery.ui requirejs knockoutjs
+bin/bower install jquery jquery-ui requirejs knockoutjs
 ```
 
 ## Usage

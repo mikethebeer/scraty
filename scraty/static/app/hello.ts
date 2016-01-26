@@ -7,14 +7,35 @@ import {Task} from './task';
 import ko = require('knockout');
 
 
+ko.observableArray.fn.filterByProperty = function(propName, matchValue) {
+    return ko.pureComputed(function() {
+        var allItems = this(), matchingItems = [];
+        for (var i = 0; i < allItems.length; i++) {
+            var current = allItems[i];
+            if (ko.unwrap(current[propName]) === matchValue)
+                matchingItems.push(current);
+        }
+        return matchingItems;
+    }, this);
+}
+
+
 class StoryModel {
 
     public tasks: KnockoutObservableArray<Task>;
+    public todoTasks: KnockoutObservableArray<Task>;
+    public inProgressTasks: KnockoutObservableArray<Task>;
+    public verifyTasks: KnockoutObservableArray<Task>;
+    public doneTasks: KnockoutObservableArray<Task>;
     public text: string;
 
     constructor(public story: Story) {
         this.tasks = ko.observableArray(story.tasks);
         this.text = story.text;
+        this.todoTasks = this.tasks.filterByProperty("state", 0)
+        this.inProgressTasks = this.tasks.filterByProperty("state", 1)
+        this.verifyTasks = this.tasks.filterByProperty("state", 2)
+        this.doneTasks = this.tasks.filterByProperty("state", 3)
     }
 }
 

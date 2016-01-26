@@ -21,6 +21,8 @@ interface KnockoutObservableFunctions<T> {
 }
 
 interface KnockoutObservableArrayFunctions<T> {
+    filterByProperty(propName: string, matchValue: T): any
+
     // General Array functions
     indexOf(searchElement: T, fromIndex?: number): number;
     slice(start: number, end?: number): T[];

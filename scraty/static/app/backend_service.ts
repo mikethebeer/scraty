@@ -1,4 +1,3 @@
-/// <reference path="jquery.d.ts" />
 
 export class BackendService {
 
@@ -7,10 +6,6 @@ export class BackendService {
     constructor() { }
 
     public getAllTasks() {
-        var jqxhr = $.get( this._host + "/api/tasks", function() {
-            alert( "success" );
-        }).fail(function() {
-            alert( "error" );
-        })
+        return $.get( "api/tasks");
     }
 }

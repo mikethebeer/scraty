@@ -58,12 +58,14 @@ create table if not exists tasks (
     story_id string,
     text string,
     user string,
+    state integer,
     user_id string
 ) with (number_of_replicas = 0)'''
 
     id = sa.Column(Unicode, primary_key=True, default=gen_id)
     text = sa.Column(Unicode)
     user = sa.Column(Unicode)
+    state = sa.Column(Integer, default=0)
     story_id = sa.Column(Unicode, sa.ForeignKey('stories.id'))
 
     story = relationship('Story', back_populates='tasks')
@@ -76,6 +78,7 @@ create table if not exists tasks (
             'id': self.id,
             'text': self.text,
             'user': self.user,
+            'state': self.state,
             'story_id': self.story_id
         }
 

@@ -69,12 +69,14 @@ Add a task::
 
 Update a task::
 
-    >>> data = {'text': 'task 1.1'}
+    >>> data = {'text': 'task 1.1', 'state': 1}
     >>> r = client.post('/api/tasks/' + task_id, data=json.dumps(data))
     >>> p(r.content)
     {
         "data": {
             "id": "...",
+            "state": 1,
+            "story_id": "...",
             "text": "task 1.1",
             "user": "username"
         },

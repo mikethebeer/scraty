@@ -68,6 +68,7 @@ export class App {
                     accept: ".task",
                     drop: function( event, ui ) {
                         changeState( ui.draggable, +$(this).attr('state') );
+                        $(ui.draggable).detach().css({top: 0,left: 0}).appendTo(this);
                     }
                 });
             });

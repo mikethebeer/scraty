@@ -29,42 +29,50 @@
                 </td>
                 <td></td>
                 <td data-bind="foreach: tasks, attr: { state: 0 }" class="state">
-                    <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, if: state == 0">
-                        <header class="w3-container w3-cyan">
-                            <span data-bind="text: state"></span>
-                        </header>
-                        <div class="w3-container">
-                            <span data-bind="text: text"></span>
+                    <div data-bind="if: state == 0">
+                        <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }">
+                            <header class="w3-container w3-cyan">
+                                <span data-bind="text: state"></span>
+                            </header>
+                            <div class="w3-container">
+                                <span data-bind="text: text"></span>
+                            </div>
                         </div>
                     </div>
                 </td>
                 <td data-bind="foreach: tasks, attr: { state: 1 }" class="state">
-                    <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, if: state == 1">
-                        <header class="w3-container w3-cyan">
-                            <span data-bind="text: state"></span>
-                        </header>
-                        <div class="w3-container">
-                            <span data-bind="text: text"></span>
+                    <div data-bind="if: state == 1">
+                        <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, if: state == 1">
+                            <header class="w3-container w3-cyan">
+                                <span data-bind="text: state"></span>
+                            </header>
+                            <div class="w3-container">
+                                <span data-bind="text: text"></span>
+                            </div>
                         </div>
                     </div>
                 </td>
                 <td data-bind="foreach: tasks, attr: { state: 2 }" class="state">
-                    <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, if: state == 2">
-                        <header class="w3-container w3-cyan">
-                            <span data-bind="text: state"></span>
-                        </header>
-                        <div class="w3-container">
-                            <span data-bind="text: text"></span>
+                    <div data-bind="if: state == 2">
+                        <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, if: state == 2">
+                            <header class="w3-container w3-cyan">
+                                <span data-bind="text: state"></span>
+                            </header>
+                            <div class="w3-container">
+                                <span data-bind="text: text"></span>
+                            </div>
                         </div>
                     </div>
                 </td>
                 <td data-bind="foreach: tasks, attr: { state: 3 }" class="state">
-                    <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, if: state == 3">
-                        <header class="w3-container w3-cyan">
-                            <span data-bind="text: state"></span>
-                        </header>
-                        <div class="w3-container">
-                            <span data-bind="text: text"></span>
+                    <div data-bind="if: state == 3">
+                        <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, if: state == 3">
+                            <header class="w3-container w3-cyan">
+                                <span data-bind="text: state"></span>
+                            </header>
+                            <div class="w3-container">
+                                <span data-bind="text: text"></span>
+                            </div>
                         </div>
                     </div>
                 </td>

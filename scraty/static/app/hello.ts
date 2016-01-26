@@ -1,7 +1,5 @@
 /// <reference path="jquery.d.ts" />
 import {DataService} from './data_service';
-import {Task} from './task';
-import {Story} from './story';
 
 export class App {
     start() {

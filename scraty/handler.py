@@ -65,6 +65,18 @@ def update_from_dict(obj, d):
     return obj
 
 
+def fail(rh, status_code, exception):
+    rh.db.rollback()
+    rh.set_status(status_code)
+    e = exception
+    message = hasattr(e, 'message') and e.message or str(e)
+    message = message or repr(e)
+    rh.write({
+        'status': 'failure',
+        'message': message or repr(e)
+    })
+
+
 def handle_exception(f):
     @wraps(f)
     def wrapper(self, *args, **kwargs):
@@ -73,15 +85,10 @@ def handle_exception(f):
         except sqlalchemy.orm.exc.NoResultFound:
             self.db.rollback()
             raise HTTPError(404)
+        except (TypeError, KeyError, ValueError) as e:
+            fail(self, 400, e)
         except Exception as e:
-            self.db.rollback()
-            message = hasattr(e, 'message') and e.message or str(e)
-            if not message:
-                raise e
-            self.write({
-                'status': 'failure',
-                'message': message
-            })
+            fail(self, 500, e)
     return wrapper
 
 

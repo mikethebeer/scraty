@@ -7,6 +7,17 @@
     <link rel="stylesheet" href="css/w3.css" type="text/css" media="all">
     <link href="../../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <script type="text/javascript" src="../../bower_components/requirejs/require.js" data-main="app/requireConfig" ></script>
+
+    <script type="text/html" id="tasks-tmpl">
+        <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, drag: {value: $data}">
+            <header class="w3-container w3-cyan">
+                <span data-bind="text: state"></span>
+            </header>
+            <div class="w3-container">
+                <span data-bind="text: text"></span>
+            </div>
+        </div>
+    </script>
   </head>
 
   <body>
@@ -28,46 +39,10 @@
                     <a href="#" data-bind="click: $root.removeStory">Remove</a>
                 </td>
                 <td></td>
-                <td data-bind="foreach: todoTasks, attr: { state: 0 }, drop: {value: $data}" class="state">
-                    <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, drag: {value: $data}">
-                        <header class="w3-container w3-cyan">
-                            <span data-bind="text: state"></span>
-                        </header>
-                        <div class="w3-container">
-                            <span data-bind="text: text"></span>
-                        </div>
-                    </div>
-                </td>
-                <td data-bind="foreach: inProgressTasks, attr: { state: 1 }, drop: {value: $data}" class="state">
-                    <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, drag: {value: $data}">
-                        <header class="w3-container w3-cyan">
-                            <span data-bind="text: state"></span>
-                        </header>
-                        <div class="w3-container">
-                            <span data-bind="text: text"></span>
-                        </div>
-                    </div>
-                </td>
-                <td data-bind="foreach: verifyTasks, attr: { state: 2 }, drop: {value: $data}" class="state">
-                    <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, drag: {value: $data}">
-                        <header class="w3-container w3-cyan">
-                            <span data-bind="text: state"></span>
-                        </header>
-                        <div class="w3-container">
-                            <span data-bind="text: text"></span>
-                        </div>
-                    </div>
-                </td>
-                <td data-bind="foreach: doneTasks, attr: { state: 3 }, drop: {value: $data}" class="state">
-                    <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, drag: {value: $data}">
-                        <header class="w3-container w3-cyan">
-                            <span data-bind="text: state"></span>
-                        </header>
-                        <div class="w3-container">
-                            <span data-bind="text: text"></span>
-                        </div>
-                    </div>
-                </td>
+                <td data-bind="template: { name: 'tasks-tmpl', foreach: todoTasks }, attr: { state: 0 }, drop: {value: $data}" class="state"> </td>
+                <td data-bind="template: { name: 'tasks-tmpl', foreach: inProgressTasks }, attr: { state: 1 }, drop: {value: $data}" class="state"></td>
+                <td data-bind="template: { name: 'tasks-tmpl', foreach: verifyTasks }, attr: { state: 2 }, drop: {value: $data}" class="state"></td>
+                <td data-bind="template: { name: 'tasks-tmpl', foreach: doneTasks }, attr: { state: 3 }, drop: {value: $data}" class="state"></td>
             </tr>
         </tbody>
     </table>

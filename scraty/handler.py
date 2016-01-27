@@ -71,8 +71,10 @@ def handle_exception(f):
         try:
             f(self, *args, **kwargs)
         except sqlalchemy.orm.exc.NoResultFound:
+            self.db.rollback()
             raise HTTPError(404)
         except Exception as e:
+            self.db.rollback()
             message = hasattr(e, 'message') and e.message or str(e)
             if not message:
                 raise e
@@ -116,6 +118,7 @@ class StoryHandler(BaseHandler):
             stories = [s.to_dict() for s in q.all()]
             self.write({'stories': stories})
 
+    @handle_exception
     def delete(self, id):
         story = Story.query.filter(Story.id == id).one()
         self.db.delete(story)
@@ -157,6 +160,7 @@ class TaskHandler(BaseHandler):
             tasks = [t.to_dict() for t in Task.query.all()]
             self.write({'tasks': tasks})
 
+    @handle_exception
     def delete(self, id):
         task = Task.query.filter(Task.id == id).one()
         self.db.delete(task)

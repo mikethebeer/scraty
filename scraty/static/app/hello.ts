@@ -86,7 +86,6 @@ class BoardViewModel {
     }
 
     removeStory(story: StoryModel) {
-        this.stories.remove(story);
         this.service.deleteStory(story.story);
     }
 

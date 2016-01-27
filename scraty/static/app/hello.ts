@@ -20,17 +20,41 @@ ko.observableArray.fn.filterByProperty = function(propName, matchValue) {
 }
 
 
+class TaskModel {
+
+    id: string;
+    story_id: KnockoutObservable<string>;
+    text: KnockoutObservable<string>;
+    user: KnockoutObservable<string>;
+    user_id: KnockoutObservable<string>;
+    state: KnockoutObservable<number>;
+
+    constructor(task: Task) {
+        this.id = task.id;
+        this.text = ko.observable(task.text);
+        this.user = ko.observable(task.user);
+        this.user_id = ko.observable(task.user_id);
+        this.state = ko.observable(task.state);
+    }
+}
+
+
 class StoryModel {
 
-    public tasks: KnockoutObservableArray<Task>;
-    public todoTasks: KnockoutObservableArray<Task>;
-    public inProgressTasks: KnockoutObservableArray<Task>;
-    public verifyTasks: KnockoutObservableArray<Task>;
-    public doneTasks: KnockoutObservableArray<Task>;
+    public tasks: KnockoutObservableArray<TaskModel>;
+    public todoTasks: KnockoutObservableArray<TaskModel>;
+    public inProgressTasks: KnockoutObservableArray<TaskModel>;
+    public verifyTasks: KnockoutObservableArray<TaskModel>;
+    public doneTasks: KnockoutObservableArray<TaskModel>;
     public text: string;
 
     constructor(public story: Story) {
-        this.tasks = ko.observableArray(story.tasks);
+        var arr : TaskModel[] = [];
+        this.tasks = ko.observableArray(arr);
+        story.tasks.forEach(t => {
+            this.tasks.push(new TaskModel(t));
+        });
+
         this.text = story.text;
         this.todoTasks = this.tasks.filterByProperty("state", 0)
         this.inProgressTasks = this.tasks.filterByProperty("state", 1)
@@ -90,13 +114,13 @@ class BoardViewModel {
             if (storyModel.story.id == task.story_id) {
                 switch (action) {
                     case 'added':
-                        storyModel.tasks.push(task);
+                        storyModel.tasks.push(new TaskModel(task));
                     break;
                     case 'deleted':
                         for (var i = 0, len = storyModel.tasks().length; i < len; i++) {
-                            var localTask = storyModel.tasks()[i];
-                            if (task.id == localTask.id) {
-                                storyModel.tasks.remove(localTask);
+                            var taskModel = storyModel.tasks()[i];
+                            if (task.id == taskModel.id) {
+                                storyModel.tasks.remove(taskModel);
                             }
                         }
                     break;

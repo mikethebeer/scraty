@@ -21,7 +21,7 @@ interface KnockoutObservableFunctions<T> {
 }
 
 interface KnockoutObservableArrayFunctions<T> {
-    filterByProperty(propName: string, matchValue: T): any
+    filterByProperty(propName: string, matchValue: any): any
 
     // General Array functions
     indexOf(searchElement: T, fromIndex?: number): number;

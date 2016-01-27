@@ -1,9 +1,10 @@
 
 import sqlalchemy as sa
-from sqlalchemy.types import Unicode, Integer
+from sqlalchemy.types import Unicode, Integer, DateTime
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from uuid import uuid4
+from datetime import datetime
 
 from .config import sqla_uri, sqla_params
 
@@ -26,13 +27,15 @@ create table if not exists stories (
     id string primary key,
     position integer,
     text string,
-    link string
+    link string,
+    created timestamp
 ) with (number_of_replicas = 0)'''
 
     id = sa.Column(Unicode, primary_key=True, default=gen_id)
     text = sa.Column(Unicode)
     link = sa.Column(Unicode)
     position = sa.Column(Integer, default=1)
+    created = sa.Column(DateTime, default=datetime.utcnow)
 
     tasks = relationship('Task', back_populates='story')
 
@@ -59,7 +62,8 @@ create table if not exists tasks (
     text string,
     user string,
     state integer,
-    user_id string
+    user_id string,
+    created timestamp
 ) with (number_of_replicas = 0)'''
 
     id = sa.Column(Unicode, primary_key=True, default=gen_id)
@@ -67,6 +71,7 @@ create table if not exists tasks (
     user = sa.Column(Unicode)
     state = sa.Column(Integer, default=0)
     story_id = sa.Column(Unicode, sa.ForeignKey('stories.id'))
+    created = sa.Column(DateTime, default=datetime.utcnow)
 
     story = relationship('Story', back_populates='tasks')
 

@@ -140,13 +140,9 @@ export class App {
             ko.applyBindings(vm);
 
             var ws = new WebSocket("ws://localhost:8080/websocket");
-            ws.onopen = function() {
-                ws.send("Hello, world");
-            };
             ws.onmessage = function (evt) {
                 var data = JSON.parse(evt.data);
                 console.log(data);
-
                 if (data.object_type == 'story') {
                     vm.updateStory(data.action, data.object);
                 } else {

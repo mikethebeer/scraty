@@ -137,7 +137,37 @@ export class App {
         $(document).ready(function() {
             var service = new DataService();
             var vm = new BoardViewModel(service)
+
+            var _dragged;
+
+            ko.bindingHandlers.drag = {
+                init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+                    $(element).draggable({
+                        cursor: "move",
+                        start: function() {
+                            _dragged = valueAccessor().value;
+                        }
+                    });
+                }
+            }
+
+            ko.bindingHandlers.drop = {
+                init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+                    $(element).droppable({
+                        accept: '.task',
+                        drop: function(event, ui) {
+                            var task = _dragged;
+                            var state = +$(this).attr('state');
+                            task.state(state);
+                            service.updateTask(task);
+                            $(ui.draggable).detach().css({top: 0,left: 0});
+                        }
+                    });
+                }
+            }
+
             ko.applyBindings(vm);
+
 
             var ws = new WebSocket("ws://localhost:8080/websocket");
             ws.onmessage = function (evt) {
@@ -150,24 +180,10 @@ export class App {
                 }
             };
 
+
             service.getAllStories().done(result => {
                 vm.addStories(result.stories);
-
-                $( ".task" ).draggable({cursor: "move"});
-                $( ".state" ).droppable({
-                    accept: ".task",
-                    drop: function( event, ui ) {
-                        changeState( ui.draggable, +$(this).attr('state') );
-                        $(ui.draggable).detach().css({top: 0,left: 0}).appendTo(this);
-                    }
-                });
             });
-
-            function changeState(item:JQuery, state:number) {
-                var id = item.attr('id');
-                var task = {"id": id, "state": state};
-                service.updateTask(task);
-            }
         });
     }
 }

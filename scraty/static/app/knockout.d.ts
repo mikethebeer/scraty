@@ -154,6 +154,9 @@ interface KnockoutBindingHandler {
 interface KnockoutBindingHandlers {
     [bindingHandler: string]: KnockoutBindingHandler;
 
+    drag: KnockoutBindingHandler;
+    drop: KnockoutBindingHandler;
+
     // Controlling text and appearance
     visible: KnockoutBindingHandler;
     text: KnockoutBindingHandler;

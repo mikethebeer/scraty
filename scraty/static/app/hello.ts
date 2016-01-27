@@ -7,6 +7,9 @@ import {Task} from './task';
 import ko = require('knockout');
 
 
+var service = new DataService();
+
+
 ko.observableArray.fn.filterByProperty = function(propName, matchValue) {
     return ko.pureComputed(function() {
         var allItems = this(), matchingItems = [];
@@ -35,6 +38,11 @@ class TaskModel {
         this.user = ko.observable(task.user);
         this.user_id = ko.observable(task.user_id);
         this.state = ko.observable(task.state);
+    }
+
+    removeTask(task: Task) {
+        // removal from DOM is done via websocket delete event
+        service.deleteTask(task);
     }
 }
 
@@ -117,12 +125,11 @@ class BoardViewModel {
                         storyModel.tasks.push(new TaskModel(task));
                     break;
                     case 'deleted':
-                        for (var i = 0, len = storyModel.tasks().length; i < len; i++) {
-                            var taskModel = storyModel.tasks()[i];
-                            if (task.id == taskModel.id) {
-                                storyModel.tasks.remove(taskModel);
+                        storyModel.tasks().forEach(t => {
+                            if (task.id == t.id) {
+                                storyModel.tasks.remove(t);
                             }
-                        }
+                        });
                     break;
                 }
             }
@@ -135,7 +142,6 @@ export class App {
 
     start() {
         $(document).ready(function() {
-            var service = new DataService();
             var vm = new BoardViewModel(service)
 
             var _dragged;

@@ -11,7 +11,7 @@
     <script type="text/html" id="tasks-tmpl">
         <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, drag: {value: $data}">
             <header class="w3-container w3-cyan">
-                <span data-bind="text: state"></span>
+                <span data-bind="text: state"></span> <button class="close" data-bind="click: removeTask">&times;</button>
             </header>
             <div class="w3-container">
                 <span data-bind="text: text"></span>

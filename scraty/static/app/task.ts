@@ -3,6 +3,5 @@ export interface Task {
     story_id?: string;
     text?: string;
     user?: string;
-    user_id?: string;
     state?: number;
 }

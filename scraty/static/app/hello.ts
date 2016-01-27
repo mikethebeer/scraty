@@ -6,7 +6,6 @@ import {Story} from './story';
 import {Task} from './task';
 import ko = require('knockout');
 
-
 var service = new DataService();
 
 
@@ -29,15 +28,34 @@ class TaskModel {
     story_id: KnockoutObservable<string>;
     text: KnockoutObservable<string>;
     user: KnockoutObservable<string>;
-    user_id: KnockoutObservable<string>;
     state: KnockoutObservable<number>;
+    isOpen: KnockoutObservable<boolean>;
 
     constructor(task: Task) {
         this.id = task.id;
+        this.story_id = ko.observable(task.story_id);
         this.text = ko.observable(task.text);
         this.user = ko.observable(task.user);
-        this.user_id = ko.observable(task.user_id);
         this.state = ko.observable(task.state);
+        this.isOpen = ko.observable(task.text == "");
+    }
+
+    open() {
+        this.isOpen(true);
+    }
+
+    close() {
+        this.isOpen(false);
+    }
+
+    saveTask(taskModel: TaskModel) {
+        var task = {
+            id: taskModel.id,
+            text: taskModel.text(),
+            user: taskModel.user()
+        };
+        service.updateTask(task);
+        this.close();
     }
 
     removeTask(task: Task) {
@@ -55,6 +73,7 @@ class StoryModel {
     public verifyTasks: KnockoutObservableArray<TaskModel>;
     public doneTasks: KnockoutObservableArray<TaskModel>;
     public text: string;
+    public isOpen: KnockoutObservable<boolean>;
 
     constructor(public story: Story) {
         var arr : TaskModel[] = [];
@@ -68,25 +87,48 @@ class StoryModel {
         this.inProgressTasks = this.tasks.filterByProperty("state", 1)
         this.verifyTasks = this.tasks.filterByProperty("state", 2)
         this.doneTasks = this.tasks.filterByProperty("state", 3)
+        this.isOpen = ko.observable(story.text == "");
+    }
+
+    addTask(story: StoryModel) {
+        var task = {
+            text: "",
+            story_id: story.story.id,
+            state: 0
+        };
+        service.addTask(task);
+    }
+
+    open() {
+        this.isOpen(true);
+    }
+
+    close() {
+        this.isOpen(false);
     }
 }
 
 
 class BoardViewModel {
     stories: KnockoutObservableArray<StoryModel>;
-    private service: DataService;
 
-    constructor(service: DataService) {
+    constructor() {
         var arr : StoryModel[] = [];
         this.stories = ko.observableArray(arr);
-        this.service = service;
 
         // WTF: http://stackoverflow.com/questions/12767128/typescript-wrong-context-this
         this.removeStory = <(story: StoryModel) => void> this.removeStory.bind(this);
     }
 
     removeStory(story: StoryModel) {
-        this.service.deleteStory(story.story);
+        service.deleteStory(story.story);
+    }
+
+    addStoryDialog(boardModel: BoardViewModel) {
+        var story = {
+            text: ""
+        };
+        service.addStory(story);
     }
 
     addStories(stories: Story[]) {
@@ -141,7 +183,7 @@ export class App {
 
     start() {
         $(document).ready(function() {
-            var vm = new BoardViewModel(service)
+            var vm = new BoardViewModel();
 
             var _dragged;
 
@@ -175,8 +217,25 @@ export class App {
                 }
             }
 
-            ko.applyBindings(vm);
+            ko.bindingHandlers.dialog = {
+                init: function(element, valueAccessor, allBindingsAccessor) {
+                    var options = ko.utils.unwrapObservable(valueAccessor()) || {};
+                    options.close = function() {
+                        allBindingsAccessor().dialogVisible(false);
+                    };
+                    $(element).dialog(options);
+                    //handle disposal (not strictly necessary in this scenario)
+                     ko.utils.domNodeDisposal.addDisposeCallback(element, function() {
+                         $(element).dialog("destroy");
+                     });
+                },
+                update: function(element, valueAccessor, allBindingsAccessor) {
+                     var shouldBeOpen = ko.utils.unwrapObservable(allBindingsAccessor().dialogVisible);
+                     $(element).dialog(shouldBeOpen ? "open" : "close");
+                }
+            };
 
+            ko.applyBindings(vm);
 
             var ws = new WebSocket("ws://localhost:8080/websocket");
             ws.onmessage = function (evt) {
@@ -188,7 +247,6 @@ export class App {
                     vm.updateTask(data.action, data.object);
                 }
             };
-
 
             service.getAllStories().done(result => {
                 vm.addStories(result.stories);

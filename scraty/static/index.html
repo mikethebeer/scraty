@@ -5,16 +5,20 @@
     <title>Scraty Frontpage</title>
     <link rel="stylesheet" href="css/style.css" type="text/css" media="all">
     <link rel="stylesheet" href="css/w3.css" type="text/css" media="all">
+    <link rel="stylesheet" href="../../bower_components/jquery-ui/themes/base/jquery-ui.min.css" type="text/css" media="all">
     <link href="../../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <script type="text/javascript" src="../../bower_components/requirejs/require.js" data-main="app/requireConfig" ></script>
 
     <script type="text/html" id="tasks-tmpl">
-        <div class="w3-card-4 w3-light-grey task" data-bind="attr: { id: id }, drag: {value: $data}">
+        <div class="w3-card-8 w3-light-grey task" data-bind="attr: { id: id }, drag: {value: $data}">
             <header class="w3-container w3-cyan">
-                <span data-bind="text: state"></span> <button class="close" data-bind="click: removeTask">&times;</button>
+                <button class="glyphicon glyphicon-pencil close" data-bind="click: open"></button><button class="glyphicon glyphicon-remove close" data-bind="click: removeTask"></button>
             </header>
             <div class="w3-container">
-                <span data-bind="text: text"></span>
+                <span data-bind="html: text"></span>
+            </div>
+            <div class="w3-container">
+                <span data-bind="text: user"></span>
             </div>
         </div>
     </script>
@@ -36,7 +40,19 @@
             <tr>
                 <td>
                     <span data-bind="text: text"></span>
-                    <a href="#" data-bind="click: $root.removeStory">Remove</a>
+                    <button id="remove_story" class="btn btn-danger btn-xs" data-bind="click: $root.removeStory">Remove</button>
+                    <button id="add_task" class="btn btn-primary btn-xs" data-bind="click: addTask">Add task</button>
+                    <div data-bind="foreach: tasks">
+                        <div class="dialog" data-bind="dialog: {autoOpen: false, title: 'Edit task' }, dialogVisible: isOpen">
+                            <div class="form-group">
+                              <textarea data-bind="textInput: text" class="form-control" rows="4"></textarea>
+                            </div>
+                            <div class="form-group">
+                              <input type="text" data-bind="textInput: user" class="form-control" placeholder="">
+                            </div>
+                            <button class="btn btn-success" data-bind="click: saveTask">Save</button>
+                        </div>
+                    </div>
                 </td>
                 <td></td>
                 <td data-bind="template: { name: 'tasks-tmpl', foreach: todoTasks }, attr: { state: 0 }, drop: {value: $data}" class="state"> </td>
@@ -46,5 +62,6 @@
             </tr>
         </tbody>
     </table>
+    <button id="add_story" class="btn btn-success" type="submit" data-bind="click: addStoryDialog">Add Story</button>
   </body>
 </html>

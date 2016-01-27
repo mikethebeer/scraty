@@ -24,6 +24,7 @@ class ScratyApplication(Application):
         Base.query = self.db.query_property()
         app_path = os.path.join(here, 'static')
         bower_components = os.path.join(here, '..', 'bower_components')
+        node_modules = os.path.join(here, '..', 'node_modules')
         handlers = [
             ('/', MainHandler),
             ('/websocket/?', SocketHandler),
@@ -32,6 +33,7 @@ class ScratyApplication(Application):
             ('/api/tasks/?', TaskHandler),
             ('/api/tasks/([a-z0-9-]{36})/?', TaskHandler),
             ('/bower_components/(.*)', StaticFileHandler, dict(path=bower_components)),
+            ('/node_modules/(.*)', StaticFileHandler, dict(path=node_modules)),
             ('/(.*)', StaticFileHandler, dict(path=app_path)),
         ]
         settings = {

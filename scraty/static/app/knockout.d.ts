@@ -156,6 +156,7 @@ interface KnockoutBindingHandlers {
 
     drag: KnockoutBindingHandler;
     drop: KnockoutBindingHandler;
+    dialog: KnockoutBindingHandler;
 
     // Controlling text and appearance
     visible: KnockoutBindingHandler;

@@ -158,9 +158,13 @@ export class App {
                         drop: function(event, ui) {
                             var task = _dragged;
                             var state = +$(this).attr('state');
-                            task.state(state);
-                            service.updateTask(task);
-                            $(ui.draggable).detach().css({top: 0,left: 0});
+                            if (state == task.state()) {
+                                $(ui.draggable).detach().css({top: 0,left: 0}).appendTo(this);
+                            } else {
+                                task.state(state);
+                                service.updateTask(task);
+                                $(ui.draggable).detach().css({top: 0,left: 0});
+                            }
                         }
                     });
                 }

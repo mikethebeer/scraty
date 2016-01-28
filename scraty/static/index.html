@@ -72,7 +72,7 @@
             <div class="form-group">
                 <textarea data-bind="textInput: text" class="form-control" rows="4"></textarea>
             </div>
-            <button class="btn btn-success" data-bind="click: saveStory">Save</button>
+            <button class="btn btn-success" data-bind="click: function() { $data.saveStory($parent) }">Save</button>
         </div>
     </div>
   </body>

@@ -114,12 +114,17 @@ export class StoryModel {
         DataService.addTask(task);
     }
 
-    saveStory(storyModel: StoryModel) {
-        var story = {
-            id: storyModel.story.id,
-            text: storyModel.text(),
-        };
-        DataService.updateStory(story);
+    saveStory(vm: BoardViewModel) {
+        if (this.story.id == undefined) {
+            DataService.addStory({text: this.text()})
+            vm.stories.remove(this)
+        } else {
+            var story = {
+                id: this.story.id,
+                text: this.text(),
+            };
+            DataService.updateStory(story);
+        }
         this.close();
     }
 
@@ -151,9 +156,10 @@ export class BoardViewModel {
     addStoryDialog(boardModel: BoardViewModel) {
         var story = {
             text: "",
+            tasks: [],
             position: 0
         };
-        DataService.addStory(story);
+        this.stories.push(new StoryModel(story));
     }
 
     addStories(stories: Story[]) {

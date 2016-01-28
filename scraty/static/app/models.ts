@@ -1,3 +1,5 @@
+/// <reference path="knockout.d.ts" />
+/// <reference path="markdown.d.ts" />
 import{DataService} from './data_service';
 import ko = require('knockout');
 import markdown = require('markdown');

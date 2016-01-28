@@ -43,10 +43,11 @@ create table if not exists stories (
         return '<Story({text})>'.format(text=self.text)
 
     def to_dict(self):
+        tasks = sorted(self.tasks, key=lambda x: x.state)
         return {
             'id': self.id,
             'text': self.text,
-            'tasks': [t.to_dict() for t in self.tasks],
+            'tasks': [t.to_dict() for t in tasks],
             'position': self.position,
             'link': self.link,
         }

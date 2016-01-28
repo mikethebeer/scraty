@@ -168,6 +168,13 @@ export class BoardViewModel {
                     }
                 }
                 break;
+            case 'updated':
+                this.stories().forEach(s => {
+                    if (s.story.id == story.id) {
+                        s.text(story.text);
+                    }
+                });
+                break;
         }
     }
 

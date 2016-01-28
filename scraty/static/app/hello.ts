@@ -172,6 +172,15 @@ class BoardViewModel {
                             }
                         });
                     break;
+                    case 'updated':
+                        storyModel.tasks().forEach(t => {
+                            if (task.id == t.id) {
+                                t.text(task.text);
+                                t.user(task.user);
+                                t.state(task.state);
+                            }
+                        });
+                    break;
                 }
             }
         }

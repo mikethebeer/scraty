@@ -14,7 +14,7 @@ bin/buildout
 To bootstrap the app simply run `npm` in this scraty folder:
 
 ```bash
-bin/npm install bower
+bin/npm install bower markdown
 ```
 
 ```bash

@@ -10,33 +10,44 @@
     <script type="text/javascript" src="../../bower_components/requirejs/require.js" data-main="app/requireConfig" ></script>
 
     <script type="text/html" id="tasks-tmpl">
-        <div class="w3-card-8 w3-light-grey task" data-bind="attr: { id: id }, drag: {value: $data}">
-            <header class="w3-blue" align="center">
-                <span data-bind="text: user"></span>
-            </header>
-            <span data-bind="html: markdownText"></span>
-            <span class="glyphicon glyphicon-pencil" aria-hidden="true" ></span>
+        <div data-bind="hover: id">
+            <div class="w3-card-8 w3-light-grey task" data-bind="attr: { id: id }, drag: {value: $data}">
+                <header class="w3-blue" align="center">
+                    <span data-bind="text: user"></span>
+                </header>
+                <span data-bind="html: markdownText"></span>
+                <div class="actions">
+                    <button type="button" class="btn btn-info btn-xs" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-pencil" aria-hidden="true" data-bind="click: open"></span>
+                    </button>
+                    <button type="button" class="btn btn-danger btn-xs" aria-label="Left Align">
+                        <span class="glyphicon glyphicon-remove" aria-hidden="true" data-bind="click: removeTask"></span>
+                    </button>
+                </div>
+            </div>
         </div>
     </script>
   </head>
 
   <body>
+      <div class="logo">
+          <img src="img/scraty-logo.png" width="150px"/>
+      </div>
       <div class="table-responsive">
           <table class="table table-striped table-bordered">
             <thead>
                 <tr>
-                    <th class="stories">STORIES</th>
-                    <th></th>
-                    <th>Todo</th>
-                    <th>In Progress</th>
-                    <th>Verify</th>
-                    <th>Done</th>
+                    <th class="stories"><h5>STORIES</h5></th>
+                    <th><h5>Todo</h5></th>
+                    <th><h5>In Progress</h5></th>
+                    <th><h5>Verify</h5></th>
+                    <th><h5>Done</h5></th>
                 </tr>
             </thead>
             <tbody data-bind="foreach: stories">
                 <tr>
                     <td>
-                        <h3 data-bind="html: markdownText"></h3>
+                        <h4 data-bind="html: markdownText"></h4>
                         <button class="btn btn-info btn-xs" data-bind="click: open">Edit</button>
                         <button id="remove_story" class="btn btn-danger btn-xs" data-bind="click: $root.removeStory">Remove</button>
                         <button id="add_task" class="btn btn-primary btn-xs pull-right" data-bind="click: addTask">Add task</button>
@@ -56,7 +67,6 @@
                             </div>
                         </div>
                     </td>
-                    <td></td>
                     <td data-bind="template: { name: 'tasks-tmpl', foreach: todoTasks }, attr: { state: 0 }, drop: {value: $data}" class="state"> </td>
                     <td data-bind="template: { name: 'tasks-tmpl', foreach: inProgressTasks }, attr: { state: 1 }, drop: {value: $data}" class="state"></td>
                     <td data-bind="template: { name: 'tasks-tmpl', foreach: verifyTasks }, attr: { state: 2 }, drop: {value: $data}" class="state"></td>

@@ -71,6 +71,17 @@ export class App {
                 }
             };
 
+            ko.bindingHandlers.hover = {
+                init: function(element, valueAccessor, allBindingsAccessor) {
+                    $(element).hover(
+                        function() {
+                            $( this ).find('.actions').show();
+                    }, function() {
+                        $( this ).find('.actions').hide();
+                    });
+                }
+            };
+
             ko.applyBindings(vm);
 
             var ws = new WebSocket("ws://" + window.location.host + "/websocket");
@@ -86,6 +97,7 @@ export class App {
 
             DataService.getAllStories().done(result => {
                 vm.addStories(result.stories);
+                $( '.actions' ).hide();
             });
         });
     }

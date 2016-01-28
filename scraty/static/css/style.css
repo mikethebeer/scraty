@@ -1,10 +1,14 @@
-div.task {
+.task {
     border: 1px solid gray;
     width: 90px;
-    height: 80px;
+    max-height: 80;
     font-size: 11px;
 }
 
 th.stories {
     width: 350px;
+}
+
+.logo {
+    padding: 5px 5px;
 }

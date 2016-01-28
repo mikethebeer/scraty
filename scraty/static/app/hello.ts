@@ -74,7 +74,7 @@ export class App {
 
             ko.applyBindings(vm);
 
-            var ws = new WebSocket("ws://localhost:8080/websocket");
+            var ws = new WebSocket("ws://" + window.location.host + "/websocket");
             ws.onmessage = function (evt) {
                 var data = JSON.parse(evt.data);
                 console.log(data);

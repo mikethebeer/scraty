@@ -72,7 +72,7 @@ class StoryModel {
     public inProgressTasks: KnockoutObservableArray<TaskModel>;
     public verifyTasks: KnockoutObservableArray<TaskModel>;
     public doneTasks: KnockoutObservableArray<TaskModel>;
-    public text: string;
+    public text: KnockoutObservable<string>;
     public isOpen: KnockoutObservable<boolean>;
 
     constructor(public story: Story) {
@@ -82,7 +82,7 @@ class StoryModel {
             this.tasks.push(new TaskModel(t));
         });
 
-        this.text = story.text;
+        this.text = ko.observable(story.text);
         this.todoTasks = this.tasks.filterByProperty("state", 0)
         this.inProgressTasks = this.tasks.filterByProperty("state", 1)
         this.verifyTasks = this.tasks.filterByProperty("state", 2)
@@ -153,6 +153,13 @@ class BoardViewModel {
                         this.stories.remove(storyModel);
                     }
                 }
+                break;
+            case 'updated':
+                this.stories().forEach(s => {
+                    if (s.story.id == story.id) {
+                        s.text(story.text);
+                    }
+                });
                 break;
         }
     }

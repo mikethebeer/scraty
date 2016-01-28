@@ -1,5 +1,6 @@
 import{DataService} from './data_service';
 import ko = require('knockout');
+import markdown = require('markdown');
 
 export interface Story {
     id?: string;
@@ -25,6 +26,7 @@ export class TaskModel {
     user: KnockoutObservable<string>;
     state: KnockoutObservable<number>;
     isOpen: KnockoutObservable<boolean>;
+    markdownText: KnockoutComputed<string>;
 
     constructor(task: Task) {
         this.id = task.id;
@@ -33,6 +35,9 @@ export class TaskModel {
         this.user = ko.observable(task.user);
         this.state = ko.observable(task.state);
         this.isOpen = ko.observable(task.text == "");
+        this.markdownText = ko.computed(function() {
+            return markdown.toHTML(this.text());
+        }, this);
     }
 
     open() {
@@ -78,6 +83,7 @@ export class StoryModel {
     doneTasks: KnockoutObservableArray<TaskModel>;
     text: KnockoutObservable<string>;
     isOpen: KnockoutObservable<boolean>;
+    markdownText: KnockoutComputed<string>;
 
     constructor(public story: Story) {
         var arr : TaskModel[] = [];
@@ -92,6 +98,9 @@ export class StoryModel {
         this.verifyTasks = this.tasks.filterByProperty("state", 2)
         this.doneTasks = this.tasks.filterByProperty("state", 3)
         this.isOpen = ko.observable(story.text == "");
+        this.markdownText = ko.computed(function() {
+            return markdown.toHTML(this.text());
+        }, this);
     }
 
     addTask(storyModel: StoryModel) {

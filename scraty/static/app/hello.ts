@@ -1,5 +1,4 @@
 /// <reference path="jquery.d.ts" />
-/// <reference path="knockout.d.ts" />
 /// <reference path="jqueryui.d.ts"/>
 import {DataService} from './data_service';
 import {Story, Task, BoardViewModel} from './models';

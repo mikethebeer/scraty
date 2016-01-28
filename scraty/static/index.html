@@ -39,9 +39,11 @@
         <tbody data-bind="foreach: stories">
             <tr>
                 <td>
-                    <span data-bind="text: text"></span>
+                    <h3 data-bind="text: text"></h3>
+                    <button class="btn btn-info btn-xs" data-bind="click: open">Edit</button>
                     <button id="remove_story" class="btn btn-danger btn-xs" data-bind="click: $root.removeStory">Remove</button>
-                    <button id="add_task" class="btn btn-primary btn-xs" data-bind="click: addTask">Add task</button>
+                    <button id="add_task" class="btn btn-primary btn-xs pull-right" data-bind="click: addTask">Add task</button>
+
                     <div data-bind="foreach: tasks">
                         <div class="dialog" data-bind="dialog: {autoOpen: false, title: 'Edit task' }, dialogVisible: isOpen">
                             <div class="form-group">
@@ -63,5 +65,13 @@
         </tbody>
     </table>
     <button id="add_story" class="btn btn-success" type="submit" data-bind="click: addStoryDialog">Add Story</button>
+    <div data-bind="foreach: stories">
+        <div class="dialog" data-bind="dialog: {autoOpen: false, title: 'Edit story' }, dialogVisible: isOpen">
+            <div class="form-group">
+              <input type="text" data-bind="textInput: text" class="form-control" placeholder="">
+            </div>
+            <button class="btn btn-success" data-bind="click: saveStory">Save</button>
+        </div>
+    </div>
   </body>
 </html>

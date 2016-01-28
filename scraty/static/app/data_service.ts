@@ -1,9 +1,8 @@
-import {Task} from './task';
-import {Story} from './story';
+import {Task, Story} from './models';
 
-export class DataService {
+export module DataService {
 
-    public getAllTasks() : JQueryPromise<any> {
+    export function getAllTasks() : JQueryPromise<any> {
         var tasks: Task[];
 
         return $.get( "api/tasks").done(result => {
@@ -13,7 +12,7 @@ export class DataService {
         });
     }
 
-    public getAllStories() : JQueryPromise<any> {
+    export function getAllStories() : JQueryPromise<any> {
         var stories: Story[];
 
         return $.get( "api/stories").done(result => {
@@ -23,15 +22,15 @@ export class DataService {
         });
     }
 
-    public addStory(story:Story) : JQueryPromise<any> {
+    export function addStory(story:Story) : JQueryPromise<any> {
         return $.post( "api/stories", JSON.stringify(story));
     }
 
-    public updateStory(story:Story) : JQueryPromise<any> {
+    export function updateStory(story:Story) : JQueryPromise<any> {
         return $.post( "api/stories/" + story.id, JSON.stringify(story));
     }
 
-    public deleteStory(story:Story) : JQueryPromise<any> {
+    export function deleteStory(story:Story) : JQueryPromise<any> {
         return $.ajax({
             url: "api/stories/" + story.id,
             type: "DELETE",
@@ -41,15 +40,15 @@ export class DataService {
         });
     }
 
-    public addTask(task:Task) : JQueryPromise<any> {
+    export function addTask(task:Task) : JQueryPromise<any> {
         return $.post( "api/tasks", JSON.stringify(task));
     }
 
-    public updateTask(task:Task) : JQueryPromise<any> {
+    export function updateTask(task:Task) : JQueryPromise<any> {
         return $.post( "api/tasks/" + task.id, JSON.stringify(task));
     }
 
-    public deleteTask(task:Task) : JQueryPromise<any> {
+    export function deleteTask(task:Task) : JQueryPromise<any> {
         return $.ajax({
             url: "api/tasks/" + task.id,
             type: "DELETE",

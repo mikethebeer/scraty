@@ -10,7 +10,7 @@ from lovely.testlayers.layer import CascadedLayer
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 from scraty.app import ScratyApplication
-from scraty.models import Story, Task
+from scraty.models import Base
 
 
 here = os.path.dirname(os.path.abspath(__file__))
@@ -70,8 +70,7 @@ test_layer = CascadedLayer('all', crate_layer, tornado_layer)
 
 def setUp(test):
     conn = engine.connect()
-    conn.execute(Story.create_table)
-    conn.execute(Task.create_table)
+    Base.metadata.create_all(bind=engine)
 
     def refresh(table):
         conn.execute('refresh table {table}'.format(table=table))

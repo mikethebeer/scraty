@@ -1,7 +1,7 @@
 
 import sqlalchemy as sa
 from sqlalchemy.types import Unicode, Integer, DateTime
-from sqlalchemy.orm import scoped_session, sessionmaker, relationship
+from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from uuid import uuid4
 from datetime import datetime
@@ -22,28 +22,20 @@ def gen_id():
 class Story(Base):
     __tablename__ = 'stories'
 
-    create_table = '''
-create table if not exists stories (
-    id string primary key,
-    position integer,
-    text string,
-    link string,
-    created timestamp
-) with (number_of_replicas = 0)'''
-
     id = sa.Column(Unicode, primary_key=True, default=gen_id)
     text = sa.Column(Unicode)
     link = sa.Column(Unicode)
     position = sa.Column(Integer, default=1)
     created = sa.Column(DateTime, default=datetime.utcnow)
 
-    tasks = relationship('Task', back_populates='story')
-
     def __repr__(self):
         return '<Story({text})>'.format(text=self.text)
 
     def to_dict(self):
-        tasks = sorted(self.tasks, key=lambda x: x.state)
+        tasks = (Task.query
+                 .filter(Task.story_id == self.id)
+                 .order_by(Task.state)
+                 .all())
         return {
             'id': self.id,
             'text': self.text,
@@ -56,25 +48,12 @@ create table if not exists stories (
 class Task(Base):
     __tablename__ = 'tasks'
 
-    create_table = '''
-create table if not exists tasks (
-    id string primary key,
-    story_id string,
-    text string,
-    user string,
-    state integer,
-    user_id string,
-    created timestamp
-) with (number_of_replicas = 0)'''
-
     id = sa.Column(Unicode, primary_key=True, default=gen_id)
     text = sa.Column(Unicode)
     user = sa.Column(Unicode)
     state = sa.Column(Integer, default=0)
-    story_id = sa.Column(Unicode, sa.ForeignKey('stories.id'))
+    story_id = sa.Column(Unicode)
     created = sa.Column(DateTime, default=datetime.utcnow)
-
-    story = relationship('Story', back_populates='tasks')
 
     def __repr__(self):
         return '<Task({text})>'.format(text=self.text[:20])
@@ -90,9 +69,7 @@ create table if not exists tasks (
 
 
 def main():
-    conn = engine.connect()
-    conn.execute(Story.create_table)
-    conn.execute(Task.create_table)
+    Base.metadata.create_all(bind=engine)
 
 
 if __name__ == "__main__":

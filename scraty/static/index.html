@@ -52,7 +52,7 @@
                                         <input type="text" data-bind="textInput: user" class="form-control" placeholder="Username" aria-describedby="sizing-addon1">
                                     </div>
                                 </div>
-                                <button class="btn btn-success" data-bind="click: saveTask">Save</button>
+                                <button class="btn btn-success" data-bind="click: function() { $data.saveTask($parent) }">Save</button>
                             </div>
                         </div>
                     </td>

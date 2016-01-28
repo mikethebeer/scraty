@@ -50,9 +50,14 @@ export class TaskModel {
         this.isOpen(false);
     }
 
-    saveTask(taskModel: TaskModel) {
-        DataService.updateTask(taskModel.asTask());
+    saveTask(storyModel: StoryModel) {
         this.close();
+        if (this.id == undefined) {
+            DataService.addTask(this.asTask());
+            storyModel.tasks.remove(this);
+        } else {
+            DataService.updateTask(this.asTask());
+        }
     }
 
     removeTask(task: Task) {
@@ -111,7 +116,7 @@ export class StoryModel {
             story_id: storyModel.story.id,
             state: 0
         };
-        DataService.addTask(task);
+        this.tasks.push(new TaskModel(task));
     }
 
     saveStory(vm: BoardViewModel) {

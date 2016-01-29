@@ -2,6 +2,9 @@
 
 ## Project management tool based on Scrum
 
+It uses [Crate](https://crate.io) as backend database for storage and can be
+served from a local machine or server that runs Python.
+
 ## Installation
 
 Bootstrap project with Python >= 3.5:
@@ -23,14 +26,16 @@ bin/bower install jquery jquery-ui requirejs knockoutjs
 
 ## Usage
 
-The app is served on defaul-port `8080` by running:
+The app is served on localhost with defaul-port `8080` by running:
 
 ```bash
 bin/app
 ```
 
-## Features
+## Features / Todos
 
-* increment stars
-* multi select (drag & drop, delete, etc.)
-* keyboard shortcuts
+- [x] Task synchronisation
+- [x] Markdown support
+- [ ] increment stars
+- [ ] multi select (drag & drop, delete, etc.)
+- [ ] keyboard shortcuts

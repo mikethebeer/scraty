@@ -7,7 +7,7 @@ from tornado.websocket import WebSocketHandler, WebSocketClosedError
 
 import sqlalchemy.orm.exc
 
-from .models import Story, Task
+from .models import Story, Task, User
 
 
 logger = logging.getLogger(__file__)
@@ -138,14 +138,14 @@ class StoryHandler(BaseHandler):
 class TaskHandler(BaseHandler):
 
     @staticmethod
-    def update_task(id, data):
+    def update(id, data):
         task = Task.query.filter(Task.id == id).one()
         return update_from_dict(task, data)
 
     @handle_exception
     def post(self, id=None):
         if id:
-            task = self.update_task(id, self.json_body())
+            task = self.update(id, self.json_body())
             action = 'updated'
         else:
             task = Task(**self.json_body())
@@ -173,4 +173,45 @@ class TaskHandler(BaseHandler):
         self.db.delete(task)
         self.db.commit()
         SocketHandler.send_message('task', 'deleted', task)
+        self.write({'status': 'success'})
+
+
+class UserHandler(BaseHandler):
+
+    @staticmethod
+    def update(name, data):
+        user = User.query.filter(User.name == name).one()
+        return update_from_dict(user, data)
+
+    @handle_exception
+    def post(self, name=None):
+        if name:
+            user = self.update(name, self.json_body())
+            action = 'updated'
+        else:
+            user = User(**self.json_body())
+            action = 'added'
+            self.db.add(user)
+        self.db.commit()
+        SocketHandler.send_message('user', action, user)
+        self.write({
+            'status': 'success',
+            'data': user.to_dict()
+        })
+
+    @handle_exception
+    def get(self, name=None):
+        if name:
+            user = User.query.filter(User.name == name).one()
+            self.write({'user': user.to_dict()})
+        else:
+            users = [u.to_dict() for u in User.query.all()]
+            self.write({'users': users})
+
+    @handle_exception
+    def delete(self, name):
+        user = User.query.filter(User.name == name).one()
+        self.db.delete(user)
+        self.db.commit()
+        SocketHandler.send_message('user', 'deleted', user)
         self.write({'status': 'success'})

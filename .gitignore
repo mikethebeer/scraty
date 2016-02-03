@@ -3,6 +3,7 @@ bin/
 parts/
 build/
 develop-eggs/
+eggs/
 .installed.cfg
 *.egg-info/
 *__pycache__/

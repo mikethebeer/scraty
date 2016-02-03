@@ -1,4 +1,3 @@
-
 import sqlalchemy as sa
 from sqlalchemy.types import Unicode, Integer, DateTime
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -21,6 +20,7 @@ def gen_id():
 
 class Story(Base):
     __tablename__ = 'stories'
+    __table_args__ = {'schema': 'scraty'}
 
     id = sa.Column(Unicode, primary_key=True, default=gen_id)
     text = sa.Column(Unicode)
@@ -47,6 +47,7 @@ class Story(Base):
 
 class Task(Base):
     __tablename__ = 'tasks'
+    __table_args__ = {'schema': 'scraty'}
 
     id = sa.Column(Unicode, primary_key=True, default=gen_id)
     text = sa.Column(Unicode)
@@ -54,19 +55,41 @@ class Task(Base):
     state = sa.Column(Integer, default=0)
     story_id = sa.Column(Unicode)
     created = sa.Column(DateTime, default=datetime.utcnow)
+    stars = sa.Column(Integer, default=0)
 
     def __repr__(self):
         return '<Task({text})>'.format(text=self.text[:20])
 
     def to_dict(self):
+        users = (User.query
+                    .filter(User.name == self.user)
+                    .order_by(User.name)
+                    .all())
+
         return {
             'id': self.id,
             'text': self.text,
-            'user': self.user,
+            'user': [u.to_dict() for u in users],
             'state': self.state,
             'story_id': self.story_id
         }
 
+
+class User(Base):
+    __tablename__ = 'users'
+    __table_args__ = {'schema': 'scraty'}
+
+    name = sa.Column(Unicode, primary_key=True)
+    color = sa.Column(Unicode)
+
+    def __repr__(self):
+        return '<User({name})>'.format(name=self.name)
+
+    def to_dict(self):
+        return {
+            'name': self.name,
+            'color': self.color
+        }
 
 def main():
     Base.metadata.create_all(bind=engine)

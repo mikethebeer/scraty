@@ -7,7 +7,7 @@ from tornado.web import Application, StaticFileHandler, RequestHandler
 from tornado.ioloop import IOLoop
 from tornado.options import define, options, parse_command_line
 
-from .handler import StoryHandler, TaskHandler, SocketHandler
+from .handler import StoryHandler, TaskHandler, UserHandler, SocketHandler
 from .models import Session, Base
 
 here = dirname(__file__)
@@ -32,6 +32,8 @@ class ScratyApplication(Application):
             ('/api/stories/([a-z0-9-]{36})/?', StoryHandler),
             ('/api/tasks/?', TaskHandler),
             ('/api/tasks/([a-z0-9-]{36})/?', TaskHandler),
+            ('/api/users/?', UserHandler),
+            ('/api/users/([a-z0-9]+)/?', UserHandler),
             ('/bower_components/(.*)', StaticFileHandler, dict(path=bower_components)),
             ('/node_modules/(.*)', StaticFileHandler, dict(path=node_modules)),
             ('/(.*)', StaticFileHandler, dict(path=app_path)),

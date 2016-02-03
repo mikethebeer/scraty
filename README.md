@@ -12,6 +12,7 @@ Bootstrap project with Python >= 3.5:
 ```bash
 python bootstrap.py
 bin/buildout
+bin/py -m scraty.models
 ```
 
 To bootstrap the app simply run `npm` in this scraty folder:
@@ -21,11 +22,12 @@ bin/npm install bower markdown
 ```
 
 ```bash
-bin/bower install jquery jquery-ui requirejs knockoutjs
+bin/bower install jquery jquery-ui requirejs knockoutjs bootstrap bootstrap-colorpicker
+bin/tsc
 ```
 
-## Usage
 
+## Usage
 The app is served on localhost with defaul-port `8080` by running:
 
 ```bash

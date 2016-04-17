@@ -1,0 +1,554 @@
+[
+    {
+        "id": "f00c1328.7e34e",
+        "type": "tab",
+        "label": "scraty"
+    },
+    {
+        "id": "ee21b7c4.cdca38",
+        "type": "http in",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "url": "/api/tasks/:story_id",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 140,
+        "y": 200,
+        "wires": [
+            [
+                "4511da03.a53504"
+            ]
+        ]
+    },
+    {
+        "id": "19068142.ffd3ff",
+        "type": "template",
+        "z": "f00c1328.7e34e",
+        "name": "allTasks",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "select\n_id as id,\nstory_id,\nuser_id,\ntext,\nstate,\nts\nfrom scraty.task\nwhere story_id=$story_id",
+        "x": 580,
+        "y": 220,
+        "wires": [
+            [
+                "e2d3c04a.3058"
+            ]
+        ]
+    },
+    {
+        "id": "a00c0064.c57ba",
+        "type": "postgres",
+        "z": "f00c1328.7e34e",
+        "postgresdb": "ed76f318.141cf",
+        "name": "crate",
+        "output": true,
+        "outputs": 1,
+        "x": 510,
+        "y": 80,
+        "wires": [
+            [
+                "bba8998e.f24fb8"
+            ]
+        ]
+    },
+    {
+        "id": "262f81f5.ed922e",
+        "type": "json",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "x": 810,
+        "y": 80,
+        "wires": [
+            [
+                "18a97e78.1d9c12"
+            ]
+        ]
+    },
+    {
+        "id": "18a97e78.1d9c12",
+        "type": "http response",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "x": 950,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "bba8998e.f24fb8",
+        "type": "function",
+        "z": "f00c1328.7e34e",
+        "name": "headers",
+        "func": "msg.res.set(\"Access-Control-Allow-Origin\", \"*\");\nmsg.headers = {\n    \"Content-Type\":\"application/json\"\n}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 660,
+        "y": 80,
+        "wires": [
+            [
+                "262f81f5.ed922e"
+            ]
+        ]
+    },
+    {
+        "id": "4511da03.a53504",
+        "type": "function",
+        "z": "f00c1328.7e34e",
+        "name": "Parse Request Parameter",
+        "func": "if (msg.req.params.story_id) {\n    msg.queryParameters = {\n        story_id: msg.req.params.story_id\n    };\n    return [null, msg];\n}\nmsg.payload = \"Parameter `story_id` missing\";\nmsg.statusCode = 400;\nreturn [msg, null];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 370,
+        "y": 200,
+        "wires": [
+            [
+                "44177a44.8d97a4"
+            ],
+            [
+                "19068142.ffd3ff"
+            ]
+        ]
+    },
+    {
+        "id": "3427df5b.8743c",
+        "type": "http response",
+        "z": "f00c1328.7e34e",
+        "name": "http error response",
+        "x": 910,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "b9057026.7a93",
+        "type": "link in",
+        "z": "f00c1328.7e34e",
+        "name": "http error",
+        "links": [
+            "44177a44.8d97a4",
+            "5538fb2b.387504",
+            "43b5d81e.ce86f8",
+            "5b471e4f.7fcb8",
+            "f5126c6f.e1c13",
+            "562f9a93.b04a04",
+            "d37447a8.d2e528"
+        ],
+        "x": 775,
+        "y": 20,
+        "wires": [
+            [
+                "3427df5b.8743c"
+            ]
+        ]
+    },
+    {
+        "id": "44177a44.8d97a4",
+        "type": "link out",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "links": [
+            "b9057026.7a93"
+        ],
+        "x": 535,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "9e21c67f.eb7a18",
+        "type": "link in",
+        "z": "f00c1328.7e34e",
+        "name": "crate",
+        "links": [
+            "e2d3c04a.3058",
+            "f24f0b8f.427f48",
+            "ab4599ba.043558",
+            "fcef507a.db04",
+            "3552b7fe.ed4468",
+            "e43cc646.a57178",
+            "60d9ef88.793d4"
+        ],
+        "x": 415,
+        "y": 80,
+        "wires": [
+            [
+                "a00c0064.c57ba"
+            ]
+        ]
+    },
+    {
+        "id": "e2d3c04a.3058",
+        "type": "link out",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "links": [
+            "9e21c67f.eb7a18"
+        ],
+        "x": 675,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "a178a719.0e4438",
+        "type": "http in",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "url": "/api/stories",
+        "method": "get",
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 280,
+        "wires": [
+            [
+                "769bd7e4.536378"
+            ]
+        ]
+    },
+    {
+        "id": "769bd7e4.536378",
+        "type": "template",
+        "z": "f00c1328.7e34e",
+        "name": "allStories",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "select\n_id as id,\nlink,\nposition,\ntext\nfrom scraty.story",
+        "x": 280,
+        "y": 280,
+        "wires": [
+            [
+                "f24f0b8f.427f48"
+            ]
+        ]
+    },
+    {
+        "id": "f24f0b8f.427f48",
+        "type": "link out",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "links": [
+            "9e21c67f.eb7a18"
+        ],
+        "x": 375,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "29afec84.72a0d4",
+        "type": "http in",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "url": "/api/stories",
+        "method": "post",
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 360,
+        "wires": [
+            [
+                "9ffa4743.8c55d8"
+            ]
+        ]
+    },
+    {
+        "id": "1c90eb08.0f1035",
+        "type": "template",
+        "z": "f00c1328.7e34e",
+        "name": "add story",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "insert into scraty.story\n(link, position, text, ts)\nvalues\n($link, $position, $text, current_timestamp)",
+        "x": 560,
+        "y": 380,
+        "wires": [
+            [
+                "fcef507a.db04"
+            ]
+        ]
+    },
+    {
+        "id": "9ffa4743.8c55d8",
+        "type": "function",
+        "z": "f00c1328.7e34e",
+        "name": "Parse Request Parameter",
+        "func": "if (msg.payload) {\n    msg.queryParameters = {\n        link: msg.payload.link,\n        position: msg.payload.position,\n        text: msg.payload.text\n    };\n    return [null, msg];\n}\nmsg.payload = \"Story payload missing\";\nmsg.statusCode = 400;\nreturn [msg, null];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 340,
+        "y": 360,
+        "wires": [
+            [
+                "5b471e4f.7fcb8"
+            ],
+            [
+                "1c90eb08.0f1035"
+            ]
+        ]
+    },
+    {
+        "id": "5b471e4f.7fcb8",
+        "type": "link out",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "links": [
+            "b9057026.7a93"
+        ],
+        "x": 515,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "fcef507a.db04",
+        "type": "link out",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "links": [
+            "9e21c67f.eb7a18"
+        ],
+        "x": 675,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "bf527908.ee08b8",
+        "type": "http in",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "url": "/api/stories/:story_id",
+        "method": "post",
+        "swaggerDoc": "",
+        "x": 150,
+        "y": 440,
+        "wires": [
+            [
+                "c08446de.127e88"
+            ]
+        ]
+    },
+    {
+        "id": "14057c5e.d69104",
+        "type": "template",
+        "z": "f00c1328.7e34e",
+        "name": "insert story",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "insert into scraty.story\n(link, position, text, ts)\nvalues\n($link, $position, $text, current_timestamp)",
+        "x": 610,
+        "y": 460,
+        "wires": [
+            [
+                "3552b7fe.ed4468"
+            ]
+        ]
+    },
+    {
+        "id": "c08446de.127e88",
+        "type": "function",
+        "z": "f00c1328.7e34e",
+        "name": "Parse Request Parameter",
+        "func": "if (msq.payload && msg.req.params.story_id) {\n    msg.queryParameters = {\n        story_id: msg.req.params.story_id,\n        link: msg.payload.link,\n        position: msg.payload.position,\n        text: msg.payload.text\n    };\n    return [null, msg];\n}\nmsg.payload = \"Parameter `story_id` or payload missing\";\nmsg.statusCode = 400;\nreturn [msg, null];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 390,
+        "y": 440,
+        "wires": [
+            [
+                "f5126c6f.e1c13"
+            ],
+            [
+                "14057c5e.d69104"
+            ]
+        ]
+    },
+    {
+        "id": "f5126c6f.e1c13",
+        "type": "link out",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "links": [
+            "b9057026.7a93"
+        ],
+        "x": 555,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "3552b7fe.ed4468",
+        "type": "link out",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "links": [
+            "9e21c67f.eb7a18"
+        ],
+        "x": 715,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "47fc7491.56a1bc",
+        "type": "http in",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "url": "/api/stories/:story_id",
+        "method": "delete",
+        "swaggerDoc": "",
+        "x": 160,
+        "y": 520,
+        "wires": [
+            [
+                "99e49a5b.dafe78"
+            ]
+        ]
+    },
+    {
+        "id": "36c60754.07eec8",
+        "type": "template",
+        "z": "f00c1328.7e34e",
+        "name": "delete story",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "delete from scraty.story\nwhere _id=$story_id",
+        "x": 630,
+        "y": 540,
+        "wires": [
+            [
+                "e43cc646.a57178"
+            ]
+        ]
+    },
+    {
+        "id": "99e49a5b.dafe78",
+        "type": "function",
+        "z": "f00c1328.7e34e",
+        "name": "Parse Request Parameter",
+        "func": "if (msg.req.params.story_id) {\n    msg.queryParameters = {\n        story_id: msg.req.params.story_id\n    };\n    return [null, msg];\n}\nmsg.payload = \"Parameter `story_id` missing\";\nmsg.statusCode = 400;\nreturn [msg, null];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 410,
+        "y": 520,
+        "wires": [
+            [
+                "562f9a93.b04a04"
+            ],
+            [
+                "36c60754.07eec8"
+            ]
+        ]
+    },
+    {
+        "id": "562f9a93.b04a04",
+        "type": "link out",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "links": [
+            "b9057026.7a93"
+        ],
+        "x": 575,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "e43cc646.a57178",
+        "type": "link out",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "links": [
+            "9e21c67f.eb7a18"
+        ],
+        "x": 735,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "a079a74d.79f708",
+        "type": "http in",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "url": "/api/tasks",
+        "method": "post",
+        "swaggerDoc": "",
+        "x": 120,
+        "y": 620,
+        "wires": [
+            [
+                "38e13b15.eef424"
+            ]
+        ]
+    },
+    {
+        "id": "895d752f.c58ef8",
+        "type": "template",
+        "z": "f00c1328.7e34e",
+        "name": "add story",
+        "field": "payload",
+        "fieldType": "msg",
+        "format": "handlebars",
+        "syntax": "mustache",
+        "template": "insert into scraty.story\n(link, position, text, ts)\nvalues\n($link, $position, $text, current_timestamp)",
+        "x": 560,
+        "y": 640,
+        "wires": [
+            [
+                "60d9ef88.793d4"
+            ]
+        ]
+    },
+    {
+        "id": "38e13b15.eef424",
+        "type": "function",
+        "z": "f00c1328.7e34e",
+        "name": "Parse Request Parameter",
+        "func": "if (msg.payload) {\n    msg.queryParameters = {\n        state: msg.payload.state,\n        story_id: msg.payload.story_id,\n        user_id: msg.payload.user_id,\n        text: msg.payload.text\n    };\n    return [null, msg];\n}\nmsg.payload = \"Story payload missing\";\nmsg.statusCode = 400;\nreturn [msg, null];",
+        "outputs": "2",
+        "noerr": 0,
+        "x": 340,
+        "y": 620,
+        "wires": [
+            [
+                "d37447a8.d2e528"
+            ],
+            [
+                "895d752f.c58ef8"
+            ]
+        ]
+    },
+    {
+        "id": "d37447a8.d2e528",
+        "type": "link out",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "links": [
+            "b9057026.7a93"
+        ],
+        "x": 515,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "60d9ef88.793d4",
+        "type": "link out",
+        "z": "f00c1328.7e34e",
+        "name": "",
+        "links": [
+            "9e21c67f.eb7a18"
+        ],
+        "x": 675,
+        "y": 640,
+        "wires": []
+    },
+    {
+        "id": "ed76f318.141cf",
+        "type": "postgresdb",
+        "z": "",
+        "hostname": "192.168.99.100",
+        "port": "5432",
+        "db": "doc",
+        "ssl": false
+    }
+]

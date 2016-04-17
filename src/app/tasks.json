@@ -1,0 +1,4 @@
+[
+  {"user": "mibe", "state": 0, "text": "prepare presentation", "story": "Scraty"},
+  {"user": "max_muster", "state": 1, "text": "do manual testing", "story": "Crate"}
+]

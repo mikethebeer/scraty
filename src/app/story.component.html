@@ -1,0 +1,72 @@
+<div class="table-responsive">
+  <table class="table table-striped table-bordered">
+    <thead>
+      <tr>
+        <th>
+          <h5>Stories</h5>
+        </th>
+        <th>
+          <h5>Todo</h5>
+        </th>
+        <th>
+          <h5>In Progress</h5>
+        </th>
+        <th>
+          <h5>Verify</h5>
+        </th>
+        <th>
+          <h5>Done</h5>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let story of stories">
+        <td width="300px">
+          <div class="w3-card-4" dnd-draggable [dragEnabled]="true">
+            <div class="w3-container">
+              <textarea class="form-control" rows="5" value>{{ story.text }}</textarea>
+            </div>
+            <footer class="w3-container">
+              <input type="text" class="form-control" value="{{ story.link }}">
+            </footer>
+          </div>
+          <button type="button" class="btn btn-primary">Add Task</button>
+        </td>
+        <td>
+          <div>
+            <ng-container *ngFor="let task of tasks | taskStateFilter:0" [ngTemplateOutlet]="taskRef" [ngOutletContext]="{ task: task }"></ng-container>
+          </div>
+        </td>
+        <td>
+          <div>
+            <ng-container *ngFor="let task of tasks | taskStateFilter:1" [ngTemplateOutlet]="taskRef" [ngOutletContext]="{ task: task }"></ng-container>
+          </div>
+        </td>
+        <td>
+          <div>
+            <ng-container *ngFor="let task of tasks | taskStateFilter:2" [ngTemplateOutlet]="taskRef" [ngOutletContext]="{ task: task }"></ng-container>
+          </div>
+        </td>
+        <td>
+          <div>
+            <ng-container *ngFor="let task of tasks | taskStateFilter:3" [ngTemplateOutlet]="taskRef" [ngOutletContext]="{ task: task }"></ng-container>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<ng-template #taskRef let-task="task">
+  <div class="w3-card-4" dnd-draggable [dragEnabled]="true">
+    <header class="w3-container" [ngStyle]="{'background-color': task.user.color}">
+      <input type="text" class="form-control" value="{{ task.user.name }}" [ngStyle]="{'background-color': task.user.color}">
+    </header>
+    <div class="w3-container">
+      <textarea class="form-control" rows="5" value>{{ task.text }}</textarea>
+    </div>
+    <footer class="w3-container">
+      <button type="button" class="btn btn-primary">Save</button>
+    </footer>
+  </div>
+</ng-template>

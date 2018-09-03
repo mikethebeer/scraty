@@ -19,12 +19,12 @@ test_requirements = [
 setup(
     name='scraty',
     install_requires=requirements,
-    packages=['scraty'],
+    packages=['src'],
     extras_require={
         'test': test_requirements,
     },
     tests_require=test_requirements,
     entry_points={
-        'console_scripts': ['app=scraty.app:main']
+        'console_scripts': ['app=src.app:main']
     },
 )

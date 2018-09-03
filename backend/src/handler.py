@@ -1,4 +1,4 @@
-
+import time
 import json
 import logging
 from functools import wraps
@@ -7,38 +7,10 @@ from tornado.websocket import WebSocketHandler, WebSocketClosedError
 
 import sqlalchemy.orm.exc
 
-from .models import Story, Task
+from .models import Story, Task, Session
 
 
 logger = logging.getLogger(__file__)
-
-
-class SocketHandler(WebSocketHandler):
-
-    clients = set()
-
-    def open(self):
-        SocketHandler.clients.add(self)
-
-    def on_message(self, message):
-        pass
-
-    def on_close(self):
-        SocketHandler.clients.remove(self)
-
-    @classmethod
-    def send_message(cls, object_type, action, obj):
-        message = {
-            'action': action,
-            'object_type': object_type,
-            'object': obj.to_dict()
-        }
-        message = json.dumps(message)
-        for client in cls.clients:
-            try:
-                client.write_message(message)
-            except WebSocketClosedError:
-                cls.clients.remove(client)
 
 
 class BaseHandler(RequestHandler):
@@ -47,12 +19,27 @@ class BaseHandler(RequestHandler):
     def db(self):
         return self.application.db
 
+    @property
+    def session(self):
+        return Session()
+
+    def set_default_headers(self):
+        # CORS preflight handling
+        self.set_header("Access-Control-Allow-Origin", "*")
+        self.set_header("Access-Control-Allow-Methods", "POST, GET, DELETE, OPTIONS")
+        self.set_header("Access-Control-Allow-Headers", "accept, cache-control, origin, x-requested-with, x-file-name, content-type")
+
     def json_body(self):
         try:
             return json.loads(self.request.body.decode('utf-8'))
         except ValueError:
             logger.warn('json.loads for "%s" failed', self.request.body)
             raise
+
+    def options(self, arg):
+        # no body
+        self.set_status(204)
+        self.finish()
 
 
 def update_from_dict(obj, d):
@@ -87,8 +74,8 @@ def handle_exception(f):
             raise HTTPError(404)
         except (TypeError, KeyError, ValueError) as e:
             fail(self, 400, e)
-        except Exception as e:
-            fail(self, 500, e)
+        # except Exception as e:
+        #     fail(self, 500, e)
     return wrapper
 
 
@@ -103,13 +90,11 @@ class StoryHandler(BaseHandler):
     def post(self, id=None):
         if id:
             story = self.update(id, self.json_body())
-            action = 'updated'
         else:
             story = Story(**self.json_body())
             self.db.add(story)
-            action = 'added'
         self.db.commit()
-        SocketHandler.send_message('story', action, story)
+        self.session.execute("refresh table stories")
         self.write({
             'status': 'success',
             'data': story.to_dict()
@@ -131,7 +116,6 @@ class StoryHandler(BaseHandler):
         self.db.delete(story)
         Task.query.filter(Task.story_id == id).delete()
         self.db.commit()
-        SocketHandler.send_message('story', 'deleted', story)
         self.write({'status': 'success'})
 
 
@@ -146,13 +130,11 @@ class TaskHandler(BaseHandler):
     def post(self, id=None):
         if id:
             task = self.update_task(id, self.json_body())
-            action = 'updated'
         else:
             task = Task(**self.json_body())
-            action = 'added'
             self.db.add(task)
         self.db.commit()
-        SocketHandler.send_message('task', action, task)
+        self.session.execute("refresh table tasks")
         self.write({
             'status': 'success',
             'data': task.to_dict()
@@ -172,5 +154,4 @@ class TaskHandler(BaseHandler):
         task = Task.query.filter(Task.id == id).one()
         self.db.delete(task)
         self.db.commit()
-        SocketHandler.send_message('task', 'deleted', task)
         self.write({'status': 'success'})

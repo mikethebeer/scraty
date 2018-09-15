@@ -7,6 +7,7 @@
     "@material-ui/icons": "^3.0.1",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
+    "react-drag-drop-container": "^6.1.1",
     "react-scripts": "1.1.5"
   },
   "scripts": {

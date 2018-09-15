@@ -12,8 +12,11 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { withStyles } from '@material-ui/core/styles';
+import { DropTarget } from 'react-drag-drop-container';
 import { HTTP_BACKEND_URL } from './config';
 import StoryDialog from './StoryDialog';
+import AddTaskButton from './AddTaskButton';
+import TaskCard from './TaskCard';
 
 
 const styles = theme => ({
@@ -23,19 +26,28 @@ const styles = theme => ({
   card: {
     display: 'flex',
   },
+  droptarget: {
+    width: '100px',
+    height: '100px',
+  },
 });
 
 class StoryGrid extends Component {
 
   state = {
     stories: [],
+    tasks: [],
     open: false,
   }
 
   componentDidMount() {
     fetch(HTTP_BACKEND_URL + '/api/stories/')
       .then(response => response.json())
-      .then(data => this.setState({stories: data.stories}))
+      .then(data => this.setState({stories: data.stories}));
+
+    fetch(HTTP_BACKEND_URL + '/api/tasks/')
+      .then(response => response.json())
+      .then(data => this.setState({tasks: data.tasks}));
   }
 
   deleteStory = (id, event) => {
@@ -43,10 +55,28 @@ class StoryGrid extends Component {
     fetch(HTTP_BACKEND_URL + '/api/stories/' + id, {
       method: 'DELETE',
     }).then(response => console.log(response));
-    this.setState({ stories: this.state.stories.filter(story => story.id !== id) });
+    this.setState({
+      stories: this.state.stories.filter(story => story.id !== id),
+      tasks: this.state.tasks.filter(task => task.story_id !== id)
+    });
   }
 
-  handleEditStoryOpen = (id, event) => {
+  deleteTask = (id) => {
+    // event.preventDefault();   // avoid reload
+    fetch(HTTP_BACKEND_URL + '/api/tasks/' + id, {
+      method: 'DELETE',
+    }).then(response => console.log(response));
+    this.setState({tasks: this.state.tasks.filter(task => task.id !== id)});
+  }
+
+  editTask = () => {
+    // event.preventDefault();   // avoid reload
+    fetch(HTTP_BACKEND_URL + '/api/tasks/')
+      .then(response => response.json())
+      .then(data => this.setState({tasks: data.tasks}));
+  }
+
+  handleEditStoryOpen = () => {
     this.setState({open: true});
   }
 
@@ -54,48 +84,105 @@ class StoryGrid extends Component {
     this.setState({open: false});
   }
 
+  dropped = (event, state) => {
+    const { dragData } = event;
+    fetch(HTTP_BACKEND_URL + '/api/tasks/' + dragData.id, {
+      method: 'POST',
+      body: JSON.stringify({
+        "state": state,
+      }),
+    })
+      .then(response => response.json())
+      .then(data => {
+        let tasks = this.state.tasks;
+        tasks = tasks.filter(task => task.id !== dragData.id);
+        tasks.push(data.data);
+        this.setState({tasks: tasks});
+      });
+  }
+
   render() {
     const rows = [];
     this.state.stories.forEach(story => {
+      let tasks = this.state.tasks.filter(task => task.story_id === story.id);
       rows.push(
-          <TableRow key={story.id}>
-            <TableCell component="th" scope="row">
-              <Card className={this.props.card}>
-                <CardContent>
-                  <Typography variant="headline" component="h2">
+        <TableRow key={story.id}>
+          <TableCell component="th" scope="row">
+            <Card className={this.props.card}>
+              <CardContent>
+                <Typography variant="title">
                   {story.text}
-                  </Typography>
-                  <Typography component="p">
-                  {story.link}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <IconButton aria-label="Edit" onClick={this.handleEditStoryOpen}>
-                    <EditIcon />
-                  </IconButton>
-                  <StoryDialog id={story.id} open={this.state.open} onClose={this.handleEditStoryClose} />
-                  <IconButton aria-label="Delete" onClick={(e) => this.deleteStory(story.id, e)}>
-                    <DeleteIcon />
-                  </IconButton>
-                </CardActions>
-              </Card>
-            </TableCell>
-            <TableCell numeric></TableCell>
-            <TableCell numeric>150</TableCell>
-            <TableCell numeric>80</TableCell>
-            <TableCell numeric>10</TableCell>
-          </TableRow>
-      )
+                </Typography>
+                <a href={story.link}>{story.link}</a>
+              </CardContent>
+              <CardActions>
+                <IconButton aria-label="Edit" onClick={this.handleEditStoryOpen}>
+                  <EditIcon />
+                </IconButton>
+                <StoryDialog story={story} open={this.state.open} onClose={this.handleEditStoryClose} />
+                <IconButton aria-label="Delete" onClick={(e) => this.deleteStory(story.id, e)}>
+                  <DeleteIcon />
+                </IconButton>
+                <AddTaskButton id={story.id} />
+              </CardActions>
+            </Card>
+          </TableCell>
+          <TableCell style={{borderLeft: '1px solid rgba(224, 224, 224, 1)'}}>
+            <DropTarget targetKey={story.id} onHit={(e) => this.dropped(e, 0)}>
+              <div style={{minHeight: 100}}>
+                {tasks.filter(task => task.state === 0)
+                  .map(task => {
+                    return (<TaskCard key={task.id} task={task} onDelete={this.deleteTask} onEdit={this.editTask}/>)
+                  })
+                }
+              </div>
+            </DropTarget>
+          </TableCell>
+          <TableCell style={{borderLeft: '1px solid rgba(224, 224, 224, 1)'}}>
+            <DropTarget targetKey={story.id} onHit={(e) => this.dropped(e, 1)}>
+              <div style={{minHeight: 100}}>
+                {tasks.filter(task => task.state === 1)
+                  .map(task => {
+                    return (<TaskCard key={task.id} task={task} onDelete={this.deleteTask} onEdit={this.editTask}/>)
+                  })
+                }
+              </div>
+            </DropTarget>
+          </TableCell>
+          <TableCell style={{borderLeft: '1px solid rgba(224, 224, 224, 1)'}}>
+            <DropTarget targetKey={story.id} onHit={(e) => this.dropped(e, 2)}>
+              <div style={{minHeight: 100}}>
+                {tasks.filter(task => task.state === 2)
+                  .map(task => {
+                    return (<TaskCard key={task.id} task={task} onDelete={this.deleteTask} onEdit={this.editTask}/>)
+                  })
+                }
+              </div>
+            </DropTarget>
+          </TableCell>
+          <TableCell style={{borderLeft: '1px solid rgba(224, 224, 224, 1)'}}>
+            <DropTarget targetKey={story.id} onHit={(e) => this.dropped(e, 3)}>
+              <div style={{minHeight: 100}}>
+                {tasks.filter(task => task.state === 3)
+                  .map(task => {
+                    return (<TaskCard key={task.id} task={task} onDelete={this.deleteTask} onEdit={this.editTask}/>)
+                  })
+                }
+              </div>
+            </DropTarget>
+          </TableCell>
+        </TableRow>
+      );
     });
     return(
       <Table className={this.props.table}>
         <TableHead>
           <TableRow>
             <TableCell>Stories</TableCell>
-            <TableCell numeric>To Do</TableCell>
-            <TableCell numeric>In Progress</TableCell>
-            <TableCell numeric>Verify</TableCell>
-            <TableCell numeric>Done</TableCell>
+            <TableCell>To Do</TableCell>
+            <TableCell>In Progress</TableCell>
+            <TableCell>Verify</TableCell>
+            <TableCell>Done</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>{rows}</TableBody>

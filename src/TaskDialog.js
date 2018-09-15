@@ -7,7 +7,11 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { HTTP_BACKEND_URL } from './config';
 
-class StoryDialog extends Component {
+class TaskDialog extends Component {
+
+  state = {
+    task: {},
+  };
 
   handleClose = () => {
     this.props.onClose()
@@ -16,46 +20,46 @@ class StoryDialog extends Component {
   handleSubmit = (event) => {
     // event.preventDefault();   // avoid reload
     const data = new FormData(event.target);
-    let url = HTTP_BACKEND_URL + '/api/stories/';
-    if (this.props.story) {
+    let url = HTTP_BACKEND_URL + '/api/tasks/';
+    if (this.props.task) {
       // update
-      console.log('update');
-      url += this.props.story.id;
+      url += this.props.task.id
     }
     fetch(url, {
       method: 'POST',
       body: JSON.stringify({
-        "text": data.get('story-title'),
-        "link": data.get('story-link')
+        "text": data.get('task-text'),
+        "user": data.get('task-user'),
+        "story_id": this.props.story_id,
       }),
     }).then(response => console.log(response));
-    this.handleClose();
+    this.setState({ open: false });
   };
 
   render() {
-    const { classes, onClose, onClick, story, ...other } = this.props;
+    const { classes, onClose, onClick, task, story_id, ...other } = this.props;
     return (
-      <Dialog aria-labelledby="story-title" onClose={this.handleClose} {...other}>
-        <DialogTitle id="story-title">Story</DialogTitle>
+      <Dialog onClose={this.handleClose} {...other}>
+        <DialogTitle>Task</DialogTitle>
         <DialogContent>
           <form onSubmit={this.handleSubmit}>
             <TextField
             autoFocus
-            defaultValue={story ? story.text : ''}
+            defaultValue={task ? task.text : ''}
             margin="normal"
-            name="story-title"
-            label="Story Title"
-            placeholder="Enter story title"
+            name="task-text"
+            label="Description"
+            placeholder="Enter what needs to be done."
             multiline
             fullWidth
             />
             <TextField
             autoFocus
-            defaultValue={story ? story.link : ''}
+            defaultValue={task ? task.user : ''}
             margin="normal"
-            name="story-link"
-            label="Link"
-            placeholder="Enter link to story"
+            name="task-user"
+            label="User"
+            placeholder="The user assigned to this task"
             fullWidth
             />
             <Button type="submit" color="primary">
@@ -71,11 +75,12 @@ class StoryDialog extends Component {
   }
 }
 
-StoryDialog.propTypes = {
+TaskDialog.propTypes = {
   classes: PropTypes.object,
   onClose: PropTypes.func,
   onClick: PropTypes.func,
-  story: PropTypes.object,
+  task: PropTypes.object,
+  story_id: PropTypes.string.isRequired,
 };
 
-export default StoryDialog;
+export default TaskDialog;

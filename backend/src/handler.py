@@ -12,6 +12,37 @@ from .models import Story, Task, Session
 
 logger = logging.getLogger(__file__)
 
+class SocketHandler(WebSocketHandler):
+
+    clients = set()
+
+    def open(self):
+        logger.info('client connected.')
+        SocketHandler.clients.add(self)
+
+    def on_message(self, message):
+        pass
+
+    def on_close(self):
+        SocketHandler.clients.remove(self)
+
+    def check_origin(self, origin):
+        return True
+
+    @classmethod
+    def send_message(cls, object_type, action, obj):
+        message = {
+            'action': action,
+            'object_type': object_type,
+            'object': obj.to_dict()
+        }
+        message = json.dumps(message)
+        for client in cls.clients:
+            try:
+                client.write_message(message)
+            except WebSocketClosedError:
+                cls.clients.remove(client)
+
 
 class BaseHandler(RequestHandler):
 
@@ -90,11 +121,14 @@ class StoryHandler(BaseHandler):
     def post(self, id=None):
         if id:
             story = self.update(id, self.json_body())
+            action = 'updated'
         else:
             story = Story(**self.json_body())
             self.db.add(story)
+            action = 'added'
         self.db.commit()
         self.session.execute("refresh table stories")
+        SocketHandler.send_message('story', action, story)
         self.write({
             'status': 'success',
             'data': story.to_dict()
@@ -116,6 +150,7 @@ class StoryHandler(BaseHandler):
         self.db.delete(story)
         Task.query.filter(Task.story_id == id).delete()
         self.db.commit()
+        SocketHandler.send_message('story', 'deleted', story)
         self.write({'status': 'success'})
 
 
@@ -130,11 +165,14 @@ class TaskHandler(BaseHandler):
     def post(self, id=None):
         if id:
             task = self.update_task(id, self.json_body())
+            action = 'updated'
         else:
             task = Task(**self.json_body())
+            action = 'added'
             self.db.add(task)
         self.db.commit()
         self.session.execute("refresh table tasks")
+        SocketHandler.send_message('task', action, task)
         self.write({
             'status': 'success',
             'data': task.to_dict()
@@ -154,4 +192,5 @@ class TaskHandler(BaseHandler):
         task = Task.query.filter(Task.id == id).one()
         self.db.delete(task)
         self.db.commit()
+        SocketHandler.send_message('task', 'deleted', task)
         self.write({'status': 'success'})

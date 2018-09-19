@@ -40,6 +40,42 @@ class StoryGrid extends Component {
     open: false,
   }
 
+  updateStoryView(action, story) {
+    switch (action) {
+      case 'added':
+        this.state.stories.push(story);
+        break;
+      case 'deleted':
+        this.setState({stories: this.state.stories.filter(s => s.id !== story.id)});
+        break;
+      case 'updated':
+        let stories = this.state.stories.filter(s => s.id !== story.id);
+        stories.push(story);
+        this.setState({stories: stories});
+        break;
+      default:
+        console.warn("update story - no action found");
+    }
+  }
+
+  updateTaskView(action, task) {
+    switch (action) {
+      case 'added':
+        this.state.tasks.push(task);
+        break;
+      case 'deleted':
+        this.setState({tasks: this.state.tasks.filter(t => t.id !== task.id)});
+        break;
+      case 'updated':
+        let tasks = this.state.tasks.filter(t => t.id !== task.id);
+        tasks.push(task);
+        this.setState({tasks: tasks});
+        break;
+      default:
+        console.warn("update task - no action found");
+    }
+  }
+
   componentDidMount() {
     fetch(HTTP_BACKEND_URL + '/api/stories/')
       .then(response => response.json())
@@ -48,6 +84,18 @@ class StoryGrid extends Component {
     fetch(HTTP_BACKEND_URL + '/api/tasks/')
       .then(response => response.json())
       .then(data => this.setState({tasks: data.tasks}));
+
+    var ws = new WebSocket("ws://localhost:8080/websocket");
+    ws.onmessage = (evt) => {
+      var data = JSON.parse(evt.data);
+      if (data.object_type === 'story') {
+        console.warn("update story");
+        this.updateStoryView(data.action, data.object);
+      } else {
+        console.warn("update task");
+        this.updateTaskView(data.action, data.object);
+      }
+    };
   }
 
   deleteStory = (id, event) => {

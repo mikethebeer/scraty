@@ -2,40 +2,42 @@
 
 ## Project management tool based on Scrum
 
-It uses [Crate](https://crate.io) as backend database for storage and can be
-served from a local machine or server that runs Python.
+It uses [Crate](https://crate.io) as backend database for storage and the
+API can be served from a local machine or server that runs Python.
 
-## Installation
+## Development
 
-Bootstrap project with Python >= 3.5:
+### Backend DB
+
+**Requirements**: [CrateDB](https://crate.io/docs/crate/getting-started/en/latest/install-run/index.html)
+                  installed and started
+
+### Backend API
 
 ```bash
-python bootstrap.py
-bin/buildout
+cd backend/
+python3.6 -m venv env
+source env/bin/activate
+pip install -e .
 ```
 
-To bootstrap the app simply run `npm` in this scraty folder:
+Run the backend API with:
 
 ```bash
-bin/npm install bower markdown
+app
 ```
 
-```bash
-bin/bower install jquery jquery-ui requirejs knockoutjs
-```
-
-## Usage
-
-The app is served on localhost with defaul-port `8080` by running:
+### Frontend
 
 ```bash
-bin/app
+npm install
+npm start
 ```
 
 ## Features / Todos
 
 - [x] Task synchronisation
-- [x] Markdown support
+- [ ] Markdown support
 - [ ] increment stars
 - [ ] multi select (drag & drop, delete, etc.)
 - [ ] keyboard shortcuts

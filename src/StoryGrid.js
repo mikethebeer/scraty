@@ -20,6 +20,12 @@ import TaskCard from './TaskCard';
 
 
 const styles = theme => ({
+  head: {
+    backgroundColor: theme.palette.primary.light,
+  },
+  cell: {
+    color: theme.palette.common.white,
+  },
   table: {
     minWidth: 700,
   },
@@ -150,6 +156,7 @@ class StoryGrid extends Component {
   }
 
   render() {
+    const { classes } = this.props;
     const rows = [];
     this.state.stories.forEach(story => {
       let tasks = this.state.tasks.filter(task => task.story_id === story.id);
@@ -223,14 +230,14 @@ class StoryGrid extends Component {
       );
     });
     return(
-      <Table className={this.props.table}>
-        <TableHead>
+      <Table className={classes.table}>
+        <TableHead className={classes.head}>
           <TableRow>
-            <TableCell>Stories</TableCell>
-            <TableCell>To Do</TableCell>
-            <TableCell>In Progress</TableCell>
-            <TableCell>Verify</TableCell>
-            <TableCell>Done</TableCell>
+            <TableCell className={classes.cell}>Stories</TableCell>
+            <TableCell className={classes.cell}>To Do</TableCell>
+            <TableCell className={classes.cell}>In Progress</TableCell>
+            <TableCell className={classes.cell}>Verify</TableCell>
+            <TableCell className={classes.cell}>Done</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>{rows}</TableBody>

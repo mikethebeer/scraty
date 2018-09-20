@@ -5,6 +5,7 @@
   "dependencies": {
     "@material-ui/core": "^3.0.2",
     "@material-ui/icons": "^3.0.1",
+    "hash-color-material": "^1.1.3",
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-drag-drop-container": "^6.1.1",

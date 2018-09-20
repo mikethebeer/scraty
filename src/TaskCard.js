@@ -5,15 +5,26 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
-import { CardActions, IconButton } from '@material-ui/core';
+import { CardActions, IconButton, Chip } from '@material-ui/core';
 import { DragDropContainer } from 'react-drag-drop-container';
 import TaskDialog from './TaskDialog';
-
+import hashColor from 'hash-color-material';
 
 const styles = theme => ({
   card: {
-    display: 'flex',
+    width: 150,
+    height: 130,
   },
+  cardcontent: {
+    height: 50,
+  },
+  icon: {
+    fontSize: 'small',
+  },
+  button: {
+    width: 'auto',
+    height: 'auto',
+  }
 });
 
 class TaskCard extends Component {
@@ -39,18 +50,18 @@ class TaskCard extends Component {
     return(
       <DragDropContainer targetKey={task.story_id} dragData={task}>
         <Card className={classes.card}>
-          <CardContent>
+          <CardContent className={classes.cardcontent}>
             <Typography variant="caption">
               <div>{task.text}</div>
-              <div>{task.user}</div>
             </Typography>
           </CardContent>
           <CardActions>
-            <IconButton aria-label="Edit" onClick={this.handleEdit}>
-              <EditIcon />
+            <Chip label={task.user} style={{ backgroundColor: hashColor.getColorFromString(task.user, false)}} />
+            <IconButton aria-label="Edit" onClick={this.handleEdit} className={classes.button}>
+              <EditIcon className={classes.icon}/>
             </IconButton>
-            <IconButton aria-label="Delete" onClick={() => onDelete(task.id)}>
-              <DeleteIcon />
+            <IconButton aria-label="Delete" onClick={() => onDelete(task.id)} className={classes.button}>
+              <DeleteIcon className={classes.icon}/>
             </IconButton>
           </CardActions>
         </Card>

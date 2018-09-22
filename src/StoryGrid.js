@@ -47,15 +47,18 @@ class StoryGrid extends Component {
   }
 
   updateStoryView(action, story) {
+    let stories = [];
     switch (action) {
       case 'added':
-        this.state.stories.push(story);
+        stories = this.state.stories;
+        stories.push(story);
+        this.setState({stories: stories});
         break;
       case 'deleted':
         this.setState({stories: this.state.stories.filter(s => s.id !== story.id)});
         break;
       case 'updated':
-        let stories = this.state.stories.filter(s => s.id !== story.id);
+        stories = this.state.stories.filter(s => s.id !== story.id);
         stories.push(story);
         this.setState({stories: stories});
         break;
@@ -65,15 +68,18 @@ class StoryGrid extends Component {
   }
 
   updateTaskView(action, task) {
+    let tasks = [];
     switch (action) {
       case 'added':
-        this.state.tasks.push(task);
+        tasks = this.state.tasks;
+        tasks.push(task);
+        this.setState({tasks: tasks});
         break;
       case 'deleted':
         this.setState({tasks: this.state.tasks.filter(t => t.id !== task.id)});
         break;
       case 'updated':
-        let tasks = this.state.tasks.filter(t => t.id !== task.id);
+        tasks = this.state.tasks.filter(t => t.id !== task.id);
         tasks.push(task);
         this.setState({tasks: tasks});
         break;

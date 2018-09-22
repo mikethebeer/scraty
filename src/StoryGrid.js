@@ -13,7 +13,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { withStyles } from '@material-ui/core/styles';
 import { DropTarget } from 'react-drag-drop-container';
-import { HTTP_BACKEND_URL } from './config';
+import { HTTP_BACKEND_URL, WS_BACKEND_URL } from './config';
 import StoryDialog from './StoryDialog';
 import AddTaskButton from './AddTaskButton';
 import TaskCard from './TaskCard';
@@ -91,7 +91,7 @@ class StoryGrid extends Component {
       .then(response => response.json())
       .then(data => this.setState({tasks: data.tasks}));
 
-    var ws = new WebSocket("ws://localhost:8080/websocket");
+    var ws = new WebSocket(WS_BACKEND_URL + '/websocket');
     ws.onmessage = (evt) => {
       var data = JSON.parse(evt.data);
       if (data.object_type === 'story') {

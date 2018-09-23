@@ -8,7 +8,7 @@ import { withStyles } from '@material-ui/core/styles';
 import { CardActions, IconButton, Chip } from '@material-ui/core';
 import { DragDropContainer } from 'react-drag-drop-container';
 import TaskDialog from './TaskDialog';
-import hashColor from 'hash-color-material';
+import toMaterialStyle from 'material-color-hash';
 
 const styles = theme => ({
   card: {
@@ -47,6 +47,7 @@ class TaskCard extends Component {
 
   render() {
     const { classes, task, onDelete } = this.props;
+    let chipColor = toMaterialStyle(task.user, 200);
     return(
       <DragDropContainer targetKey={task.story_id} dragData={task}>
         <Card className={classes.card}>
@@ -56,7 +57,7 @@ class TaskCard extends Component {
             </Typography>
           </CardContent>
           <CardActions>
-            <Chip label={task.user} style={{ backgroundColor: hashColor.getColorFromString(task.user, false)}} />
+            <Chip label={task.user} style={chipColor} />
             <IconButton aria-label="Edit" onClick={this.handleEdit} className={classes.button}>
               <EditIcon className={classes.icon}/>
             </IconButton>

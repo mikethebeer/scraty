@@ -18,7 +18,7 @@ class TaskDialog extends Component {
   };
 
   handleSubmit = (event) => {
-    // event.preventDefault();   // avoid reload
+    event.preventDefault();   // avoid reload
     const data = new FormData(event.target);
     let url = HTTP_BACKEND_URL + '/api/tasks/';
     if (this.props.task) {
@@ -32,8 +32,8 @@ class TaskDialog extends Component {
         "user": data.get('task-user'),
         "story_id": this.props.story_id,
       }),
-    }).then(response => console.log(response));
-    this.setState({ open: false });
+    });
+    this.handleClose();
   };
 
   render() {

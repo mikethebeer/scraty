@@ -30,7 +30,7 @@ const styles = theme => ({
     minWidth: 700,
   },
   card: {
-    display: 'flex',
+    width: 200,
   },
   droptarget: {
     width: '100px',
@@ -101,10 +101,8 @@ class StoryGrid extends Component {
     ws.onmessage = (evt) => {
       var data = JSON.parse(evt.data);
       if (data.object_type === 'story') {
-        console.warn("update story");
         this.updateStoryView(data.action, data.object);
       } else {
-        console.warn("update task");
         this.updateTaskView(data.action, data.object);
       }
     };
@@ -114,10 +112,11 @@ class StoryGrid extends Component {
     // event.preventDefault();   // avoid reload
     fetch(HTTP_BACKEND_URL + '/api/stories/' + id, {
       method: 'DELETE',
-    }).then(response => console.log(response));
-    this.setState({
-      stories: this.state.stories.filter(story => story.id !== id),
-      tasks: this.state.tasks.filter(task => task.story_id !== id)
+    }).then(response => {
+      this.setState({
+        stories: this.state.stories.filter(story => story.id !== id),
+        tasks: this.state.tasks.filter(task => task.story_id !== id)
+      });
     });
   }
 
@@ -125,8 +124,9 @@ class StoryGrid extends Component {
     // event.preventDefault();   // avoid reload
     fetch(HTTP_BACKEND_URL + '/api/tasks/' + id, {
       method: 'DELETE',
-    }).then(response => console.log(response));
-    this.setState({tasks: this.state.tasks.filter(task => task.id !== id)});
+    }).then(response => {
+      this.setState({tasks: this.state.tasks.filter(task => task.id !== id)});
+    });
   }
 
   editTask = () => {
@@ -169,7 +169,7 @@ class StoryGrid extends Component {
       rows.push(
         <TableRow key={story.id}>
           <TableCell component="th" scope="row">
-            <Card className={this.props.card}>
+            <Card className={classes.card}>
               <CardContent>
                 <Typography variant="title">
                   {story.text}
@@ -239,7 +239,7 @@ class StoryGrid extends Component {
       <Table className={classes.table}>
         <TableHead className={classes.head}>
           <TableRow>
-            <TableCell className={classes.cell}>Stories</TableCell>
+            <TableCell className={classes.cell} style={{width: 200}}>Stories</TableCell>
             <TableCell className={classes.cell}>To Do</TableCell>
             <TableCell className={classes.cell}>In Progress</TableCell>
             <TableCell className={classes.cell}>Verify</TableCell>

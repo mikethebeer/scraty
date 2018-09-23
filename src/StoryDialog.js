@@ -14,12 +14,11 @@ class StoryDialog extends Component {
   };
 
   handleSubmit = (event) => {
-    // event.preventDefault();   // avoid reload
+    event.preventDefault();   // avoid reload
     const data = new FormData(event.target);
     let url = HTTP_BACKEND_URL + '/api/stories/';
     if (this.props.story) {
       // update
-      console.log('update');
       url += this.props.story.id;
     }
     fetch(url, {
@@ -28,7 +27,7 @@ class StoryDialog extends Component {
         "text": data.get('story-title'),
         "link": data.get('story-link')
       }),
-    }).then(response => console.log(response));
+    });
     this.handleClose();
   };
 

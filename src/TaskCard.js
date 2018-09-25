@@ -14,6 +14,7 @@ const styles = theme => ({
   card: {
     width: 150,
     height: 130,
+    margin: '5px 5px 5px 5px',
   },
   cardcontent: {
     height: 50,

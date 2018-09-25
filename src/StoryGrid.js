@@ -18,23 +18,23 @@ import StoryDialog from './StoryDialog';
 import AddTaskButton from './AddTaskButton';
 import TaskCard from './TaskCard';
 
-
 const styles = theme => ({
   head: {
     backgroundColor: theme.palette.primary.light,
+    color: theme.palette.common.white,
   },
   cell: {
-    color: theme.palette.common.white,
+    borderLeft: '1px solid rgba(224, 224, 224, 1)',
   },
   table: {
     minWidth: 700,
+    height: 1,
   },
   card: {
     width: 200,
   },
   droptarget: {
-    width: '100px',
-    height: '100px',
+    height: '100%',
   },
 });
 
@@ -168,7 +168,7 @@ class StoryGrid extends Component {
       let tasks = this.state.tasks.filter(task => task.story_id === story.id);
       rows.push(
         <TableRow key={story.id}>
-          <TableCell component="th" scope="row">
+          <TableCell component="th" scope="row" className={classes.cell}>
             <Card className={classes.card}>
               <CardContent>
                 <Typography variant="title">
@@ -188,49 +188,57 @@ class StoryGrid extends Component {
               </CardActions>
             </Card>
           </TableCell>
-          <TableCell style={{borderLeft: '1px solid rgba(224, 224, 224, 1)'}}>
-            <DropTarget targetKey={story.id} onHit={(e) => this.dropped(e, 0)}>
-              <div style={{minHeight: 100}}>
-                {tasks.filter(task => task.state === 0)
-                  .map(task => {
-                    return (<TaskCard key={task.id} task={task} onDelete={this.deleteTask} onEdit={this.editTask}/>)
-                  })
-                }
-              </div>
-            </DropTarget>
+          <TableCell className={classes.cell} padding='none'>
+            <div className={classes.droptarget}>
+              <DropTarget targetKey={story.id} onHit={(e) => this.dropped(e, 0)}>
+                <div className={classes.droptarget}>
+                  {tasks.filter(task => task.state === 0)
+                    .map(task => {
+                      return (<TaskCard key={task.id} task={task} onDelete={this.deleteTask} onEdit={this.editTask}/>)
+                    })
+                  }
+                </div>
+              </DropTarget>
+            </div>
           </TableCell>
-          <TableCell style={{borderLeft: '1px solid rgba(224, 224, 224, 1)'}}>
-            <DropTarget targetKey={story.id} onHit={(e) => this.dropped(e, 1)}>
-              <div style={{minHeight: 100}}>
-                {tasks.filter(task => task.state === 1)
-                  .map(task => {
-                    return (<TaskCard key={task.id} task={task} onDelete={this.deleteTask} onEdit={this.editTask}/>)
-                  })
-                }
-              </div>
-            </DropTarget>
+          <TableCell className={classes.cell} padding='none'>
+            <div className={classes.droptarget}>
+              <DropTarget targetKey={story.id} onHit={(e) => this.dropped(e, 1)}>
+                <div className={classes.droptarget}>
+                  {tasks.filter(task => task.state === 1)
+                    .map(task => {
+                      return (<TaskCard key={task.id} task={task} onDelete={this.deleteTask} onEdit={this.editTask}/>)
+                    })
+                  }
+                </div>
+              </DropTarget>
+            </div>
           </TableCell>
-          <TableCell style={{borderLeft: '1px solid rgba(224, 224, 224, 1)'}}>
-            <DropTarget targetKey={story.id} onHit={(e) => this.dropped(e, 2)}>
-              <div style={{minHeight: 100}}>
-                {tasks.filter(task => task.state === 2)
-                  .map(task => {
-                    return (<TaskCard key={task.id} task={task} onDelete={this.deleteTask} onEdit={this.editTask}/>)
-                  })
-                }
-              </div>
-            </DropTarget>
+          <TableCell className={classes.cell} padding='none'>
+            <div className={classes.droptarget}>
+              <DropTarget targetKey={story.id} onHit={(e) => this.dropped(e, 2)}>
+                <div className={classes.droptarget}>
+                  {tasks.filter(task => task.state === 2)
+                    .map(task => {
+                      return (<TaskCard key={task.id} task={task} onDelete={this.deleteTask} onEdit={this.editTask}/>)
+                    })
+                  }
+                </div>
+              </DropTarget>
+            </div>
           </TableCell>
-          <TableCell style={{borderLeft: '1px solid rgba(224, 224, 224, 1)'}}>
-            <DropTarget targetKey={story.id} onHit={(e) => this.dropped(e, 3)}>
-              <div style={{minHeight: 100}}>
-                {tasks.filter(task => task.state === 3)
-                  .map(task => {
-                    return (<TaskCard key={task.id} task={task} onDelete={this.deleteTask} onEdit={this.editTask}/>)
-                  })
-                }
-              </div>
-            </DropTarget>
+          <TableCell className={classes.cell} padding='none'>
+            <div className={classes.droptarget}>
+              <DropTarget targetKey={story.id} onHit={(e) => this.dropped(e, 3)}>
+                <div className={classes.droptarget}>
+                  {tasks.filter(task => task.state === 3)
+                    .map(task => {
+                      return (<TaskCard key={task.id} task={task} onDelete={this.deleteTask} onEdit={this.editTask}/>)
+                    })
+                  }
+                </div>
+              </DropTarget>
+            </div>
           </TableCell>
         </TableRow>
       );
@@ -239,11 +247,11 @@ class StoryGrid extends Component {
       <Table className={classes.table}>
         <TableHead className={classes.head}>
           <TableRow>
-            <TableCell className={classes.cell} style={{width: 200}}>Stories</TableCell>
-            <TableCell className={classes.cell}>To Do</TableCell>
-            <TableCell className={classes.cell}>In Progress</TableCell>
-            <TableCell className={classes.cell}>Verify</TableCell>
-            <TableCell className={classes.cell}>Done</TableCell>
+            <TableCell className={classes.head} style={{width: 200}}>Stories</TableCell>
+            <TableCell className={classes.head}>To Do</TableCell>
+            <TableCell className={classes.head}>In Progress</TableCell>
+            <TableCell className={classes.head}>Verify</TableCell>
+            <TableCell className={classes.head}>Done</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>{rows}</TableBody>

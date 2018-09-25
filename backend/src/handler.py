@@ -140,7 +140,7 @@ class StoryHandler(BaseHandler):
             story = Story.query.filter(Story.id == id).one()
             self.write({'story': story.to_dict()})
         else:
-            q = Story.query.order_by(Story.position)
+            q = Story.query.order_by(Story.position, Story.created.asc())
             stories = [s.to_dict() for s in q.all()]
             self.write({'stories': stories})
 

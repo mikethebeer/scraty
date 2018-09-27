@@ -9,10 +9,6 @@ import { HTTP_BACKEND_URL } from './config';
 
 class TaskDialog extends Component {
 
-  state = {
-    task: {},
-  };
-
   handleClose = () => {
     this.props.onClose()
   };

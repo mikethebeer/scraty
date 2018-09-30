@@ -9,7 +9,9 @@
     "react": "^16.4.2",
     "react-dom": "^16.4.2",
     "react-drag-drop-container": "^6.1.1",
-    "react-scripts": "1.1.5"
+    "react-redux": "^5.0.7",
+    "react-scripts": "1.1.5",
+    "redux": "^4.0.0"
   },
   "scripts": {
     "start": "react-scripts start",

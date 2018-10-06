@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import DeleteIcon from '@material-ui/icons/Delete';
-import EditIcon from '@material-ui/icons/Edit';
-import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
-import { CardActions, IconButton, Chip } from '@material-ui/core';
-import { DragDropContainer } from 'react-drag-drop-container';
-import TaskDialog from './TaskDialog';
-import toMaterialStyle from 'material-color-hash';
+import React, { Component } from 'react'
+import Card from '@material-ui/core/Card'
+import CardContent from '@material-ui/core/CardContent'
+import DeleteIcon from '@material-ui/icons/Delete'
+import EditIcon from '@material-ui/icons/Edit'
+import Typography from '@material-ui/core/Typography'
+import { withStyles } from '@material-ui/core/styles'
+import { CardActions, IconButton, Chip } from '@material-ui/core'
+import { DragDropContainer } from 'react-drag-drop-container'
+import TaskDialog from './TaskDialog'
+import toMaterialStyle from 'material-color-hash'
 
 const styles = theme => ({
   card: {
@@ -20,7 +20,7 @@ const styles = theme => ({
     height: 50,
   },
   icon: {
-    fontSize: 'small',
+    fontSize: 'medium',
   },
   button: {
     width: 'auto',
@@ -29,26 +29,26 @@ const styles = theme => ({
   droptarget: {
     height: '100%',
   },
-});
+})
 
 class TaskGrid extends Component {
   state = {
     open: false,
-  };
+  }
 
   handleClickOpen = () => {
-    this.setState({open: true});
-  };
+    this.setState({open: true})
+  }
 
   handleClose = () => {
-    this.setState({open: false});
-  };
+    this.setState({open: false})
+  }
 
   render() {
-    const { classes, tasks, onDelete } = this.props;
+    const { classes, tasks, onDelete } = this.props
     const storyTasks = []
     tasks.map(task => {
-      let chipColor = toMaterialStyle(task.user, 200);
+      let chipColor = toMaterialStyle(task.user, 200)
       return storyTasks.push(
         <DragDropContainer key={task.id} targetKey={task.story_id} dragData={task}>
           <Card className={classes.card}>
@@ -75,8 +75,8 @@ class TaskGrid extends Component {
       <div className={classes.droptarget}>
         {storyTasks}
       </div>
-    );
+    )
   }
 }
 
-export default withStyles(styles)(TaskGrid);
+export default withStyles(styles)(TaskGrid)

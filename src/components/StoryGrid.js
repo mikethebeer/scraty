@@ -1,23 +1,24 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableHead from '@material-ui/core/TableHead';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
-import { withStyles } from '@material-ui/core/styles';
-import { DropTarget } from 'react-drag-drop-container';
-import TaskList from '../containers/TaskList';
-import Story from '../containers/Story';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableHead from '@material-ui/core/TableHead'
+import TableCell from '@material-ui/core/TableCell'
+import TableRow from '@material-ui/core/TableRow'
+import { withStyles } from '@material-ui/core/styles'
+import { DropTarget } from 'react-drag-drop-container'
+import TaskList from '../containers/TaskList'
+import Story from '../containers/Story'
 
 const styles = theme => ({
   head: {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.common.white,
-    fontSize: 20,
+    fontSize: 18,
   },
   cell: {
     borderLeft: '1px solid rgba(224, 224, 224, 1)',
+    borderBottom: '1px solid rgba(224, 224, 224, 1)',
   },
   table: {
     minWidth: 700,
@@ -29,13 +30,13 @@ const styles = theme => ({
   droptarget: {
     height: '100%',
   },
-});
+})
 
 class StoryGrid extends Component {
 
   render() {
-    const { classes, stories, onDrop } = this.props;
-    const rows = [];
+    const { classes, stories, onDrop } = this.props
+    const rows = []
     stories.map(story => {
       return rows.push(
         <TableRow key={story.id}>
@@ -71,8 +72,8 @@ class StoryGrid extends Component {
             </div>
           </TableCell>
         </TableRow>
-      );
-    });
+      )
+    })
     return(
       <Table className={classes.table}>
         <TableHead className={classes.head}>
@@ -86,7 +87,7 @@ class StoryGrid extends Component {
         </TableHead>
         <TableBody>{rows}</TableBody>
       </Table>
-    );
+    )
   }
 }
 
@@ -100,4 +101,4 @@ StoryGrid.propTypes = {
   )
 }
 
-export default withStyles(styles)(StoryGrid);
+export default withStyles(styles)(StoryGrid)

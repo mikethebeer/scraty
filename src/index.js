@@ -7,7 +7,7 @@ import registerServiceWorker from './registerServiceWorker'
 import rootReducer from './reducers'
 import { HTTP_BACKEND_URL, WS_BACKEND_URL } from './config/config'
 import { addStory, deleteStory, updateStory } from './actions/story'
-import { addTask, deleteTask, updateTask } from './actions/task';
+import { addTask, deleteTask, updateTask } from './actions/task'
 
 const store = createStore(rootReducer)
 

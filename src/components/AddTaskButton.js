@@ -1,25 +1,25 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import IconButton from '@material-ui/core/IconButton';
-import AddIcon from '@material-ui/icons/Add';
-import TaskDialog from './TaskDialog';
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import IconButton from '@material-ui/core/IconButton'
+import AddIcon from '@material-ui/icons/Add'
+import TaskDialog from './TaskDialog'
 
 
 class AddTaskButton extends Component {
   state = {
     open: false,
-  };
+  }
 
   handleClickOpen = () => {
-    this.setState({open: true});
-  };
+    this.setState({open: true})
+  }
 
   handleClose = () => {
-    this.setState({open: false});
-  };
+    this.setState({open: false})
+  }
 
   render() {
-    const { id, ...other } = this.props;
+    const { id, ...other } = this.props
 
     return(
       <div>
@@ -28,12 +28,12 @@ class AddTaskButton extends Component {
         </IconButton>
         <TaskDialog open={this.state.open} onClose={this.handleClose} story_id={id}/>
       </div>
-    );
+    )
   }
 }
 
 AddTaskButton.propTypes = {
   id: PropTypes.string.isRequired,
-};
+}
 
-export default AddTaskButton;
+export default AddTaskButton

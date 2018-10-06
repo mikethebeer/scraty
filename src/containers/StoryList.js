@@ -1,7 +1,7 @@
-import { connect } from "react-redux";
-import StoryGrid from "../components/StoryGrid";
-import { HTTP_BACKEND_URL } from "../config/config";
-import { updateTask } from "../actions/task";
+import { connect } from "react-redux"
+import StoryGrid from "../components/StoryGrid"
+import { HTTP_BACKEND_URL } from "../config/config"
+import { updateTask } from "../actions/task"
 
 const mapStateToProps = state => {
   return {
@@ -12,7 +12,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onDrop: (event, state) => {
-      const { dragData } = event;
+      const { dragData, containerElem } = event
+      containerElem.style.visibility = 'hidden'
       fetch(HTTP_BACKEND_URL + '/api/tasks/' + dragData.id, {
         method: 'POST',
         body: JSON.stringify({
@@ -22,7 +23,7 @@ const mapDispatchToProps = dispatch => {
       .then(response => response.json())
       .then(data => {
         dispatch(updateTask(data.data))
-      });
+      })
     }
   }
 }

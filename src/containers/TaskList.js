@@ -1,7 +1,7 @@
-import { connect } from "react-redux";
-import { deleteTask } from "../actions/task";
-import TaskGrid from "../components/TaskGrid";
-import { HTTP_BACKEND_URL } from "../config/config";
+import { connect } from "react-redux"
+import { deleteTask } from "../actions/task"
+import TaskGrid from "../components/TaskGrid"
+import { HTTP_BACKEND_URL } from "../config/config"
 
 const mapStateToProps = (state, ownProps) => {
   return {
@@ -16,7 +16,7 @@ const mapDispatchToProps = dispatch => {
       method: 'DELETE',
       }).then(response => {
         dispatch(deleteTask(task))
-      });
+      })
     }
   }
 }

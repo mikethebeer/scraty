@@ -1,17 +1,17 @@
-import { ADD_STORY, DELETE_STORY, UPDATE_STORY } from "../actions/story";
-import { ADD_TASK, DELETE_TASK, UPDATE_TASK } from "../actions/task";
+import { ADD_STORY, DELETE_STORY, UPDATE_STORY } from "../actions/story"
+import { ADD_TASK, DELETE_TASK, UPDATE_TASK } from "../actions/task"
 
 function removeTaskFromStory(story, task_to_remove) {
   story.tasks = story.tasks
       .filter(t => t.id !== task_to_remove.id)
-  return story;
+  return story
 }
 
 function addTaskToStory(story, task_to_add) {
   story.tasks = story.tasks
     .filter(t => t.id !== task_to_add.id)
   story.tasks.push(task_to_add)
-  return story;
+  return story
 }
 
 /**
@@ -19,8 +19,8 @@ function addTaskToStory(story, task_to_add) {
  * using Reducer Composition pattern
  */
 const stories = (state = [], action) => {
-  let tmp_stories = [];
-  let story = {};
+  let tmp_stories = []
+  let story = {}
   switch (action.type) {
     case ADD_STORY:
       return state.concat(action.story)
@@ -44,7 +44,7 @@ const stories = (state = [], action) => {
       tmp_stories.push(add_story)
       return tmp_stories
     default:
-      return state;
+      return state
   }
 }
 

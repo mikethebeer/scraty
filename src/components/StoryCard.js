@@ -30,7 +30,7 @@ class StoryCard extends Component {
     return(
       <Card className={classes.card}>
         <CardContent>
-          <Button variant="contained" size="small" color="secondary" href={story.link}>{story.text}</Button>
+          <Button variant="contained" size="small" color="primary" href={story.link}>{story.text}</Button>
         </CardContent>
         <CardActions>
           <IconButton aria-label="Edit" onClick={this.handleClickOpen}>

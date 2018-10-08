@@ -1,13 +1,12 @@
 import json
 import logging
-import time
 from functools import wraps
 
 import sqlalchemy.orm.exc
 from tornado.web import HTTPError, RequestHandler
 from tornado.websocket import WebSocketClosedError, WebSocketHandler
 
-from .models import Session, Story, Task
+from .models import Board, Session, Story, Task
 
 logger = logging.getLogger(__file__)
 
@@ -31,7 +30,11 @@ class SocketHandler(WebSocketHandler):
 
     @classmethod
     def send_message(cls, object_type, action, obj):
-        message = {"action": action, "object_type": object_type, "object": obj.to_dict()}
+        message = {
+            "action": action,
+            "object_type": object_type,
+            "object": obj.to_dict(),
+        }
         message = json.dumps(message)
         for client in cls.clients:
             try:
@@ -76,7 +79,9 @@ def update_from_dict(obj, d):
         if hasattr(obj, key):
             setattr(obj, key, value)
         else:
-            raise ValueError("Object {0} doesn't have a property named '{1}'".format(obj, key))
+            raise ValueError(
+                "Object {0} doesn't have a property named '{1}'".format(obj, key)
+            )
     return obj
 
 
@@ -103,6 +108,49 @@ def handle_exception(f):
         #     fail(self, 500, e)
 
     return wrapper
+
+
+class BoardHandler(BaseHandler):
+    @staticmethod
+    def update(id, data):
+        board = Board.query.filter(Board.id == id).one()
+        return update_from_dict(board, data)
+
+    @handle_exception
+    def post(self, id=None):
+        if id:
+            board = self.update(id, self.json_body())
+            action = "updated"
+        else:
+            board = Board(**self.json_body())
+            self.db.add(board)
+            action = "added"
+        self.db.commit()
+        self.session.execute("refresh table boards")
+        SocketHandler.send_message("board", action, board)
+        self.write({"status": "success", "data": board.to_dict()})
+
+    @handle_exception
+    def get(self, id=None):
+        if id:
+            board = Board.query.filter(Board.id == id).one()
+            self.write({"board": board.to_dict()})
+        else:
+            q = Board.query.order_by(Board.created.asc())
+            boards = [b.to_dict() for b in q.all()]
+            self.write({"boards": boards})
+
+    @handle_exception
+    def delete(self, id):
+        board = Board.query.filter(Board.id == id).one()
+        self.db.delete(board)
+        stories = [s.to_dict() for s in Story.query.filter(Story.board_id == id).all()]
+        for story in stories:
+            Task.query.filter(Task.story_id == story.id).delete()
+            Story.query.filter(Story.id == story.id).delete()
+        self.db.commit()
+        SocketHandler.send_message("board", "deleted", board)
+        self.write({"status": "success"})
 
 
 class StoryHandler(BaseHandler):

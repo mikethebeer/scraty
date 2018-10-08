@@ -9,6 +9,7 @@ import AddTaskButton from './AddTaskButton'
 const styles = theme => ({
   card: {
     width: 180,
+    padding: 0,
   },
 })
 

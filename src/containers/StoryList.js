@@ -12,8 +12,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onDrop: (event, state) => {
-      const { dragData, containerElem } = event
-      containerElem.style.visibility = 'hidden'
+      const { dragData, } = event
       fetch(HTTP_BACKEND_URL + '/api/tasks/' + dragData.id, {
         method: 'POST',
         body: JSON.stringify({

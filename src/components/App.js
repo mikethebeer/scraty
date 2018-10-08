@@ -23,7 +23,7 @@ const styles = theme => ({
 
 const theme = createMuiTheme({
   palette: {
-    // type: 'dark',
+    type: 'dark',
     background: {
       default: '#303030',
     },
@@ -33,9 +33,12 @@ const theme = createMuiTheme({
       light: '#d15353',
     },
     primary: {
-      dark: '#212121',
-      main: '#303030',
-      light: '#424242',
+      main: '#F5F5F5',
+      light: '#F8F8F8',
+      dark: '#909090',
+      // dark: '#212121',
+      // main: '#303030',
+      // light: '#424242',
     },
   }
 })

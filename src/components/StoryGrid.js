@@ -14,17 +14,17 @@ const styles = theme => ({
   head: {
     backgroundColor: theme.palette.secondary.main,
     color: theme.palette.common.white,
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'Permanent Marker',
   },
   cell: {
-    borderLeft: '1px solid rgba(224, 224, 224, 1)',
-    borderTop: '10px solid #303030',
+    borderLeft: '1px solid #303030',
+    borderTop: '8px solid #303030',
   },
   table: {
     minWidth: 700,
     height: 1,
-    backgroundColor: '#ffff'
+    backgroundColor: theme.palette.primary.dark,
   },
   card: {
     width: 200,

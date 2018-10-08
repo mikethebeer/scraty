@@ -16,6 +16,10 @@ const styles = theme => ({
     height: 130,
     margin: '5px 5px 5px 5px',
   },
+  actions: {
+    position: 'absolute',
+    bottom: 5,
+  },
   cardcontent: {
     height: 50,
   },
@@ -57,7 +61,7 @@ class TaskGrid extends Component {
                 <div>{task.text}</div>
               </Typography>
             </CardContent>
-            <CardActions>
+            <CardActions className={classes.actions}>
               <Chip label={task.user} style={chipColor} />
               <IconButton aria-label="Edit" onClick={this.handleClickOpen} className={classes.button}>
                 <EditIcon className={classes.icon}/>

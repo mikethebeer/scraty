@@ -12,6 +12,8 @@ API can be served from a local machine or server that runs Python.
 **Requirements**: [CrateDB](https://crate.io/docs/crate/getting-started/en/latest/install-run/index.html)
                   installed and started
 
+DB Schema: `/setup/schema.sql`
+
 ### Backend API
 
 ```bash

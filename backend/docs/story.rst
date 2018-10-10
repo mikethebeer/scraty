@@ -1,3 +1,19 @@
+Add a board::
+
+    >>> r = client.post('/api/boards/', data=json.dumps({'name': 'scraty board'}))
+    >>> p(r.content)
+    {
+        "data": {
+            "id": "...",
+            "name": "scraty board"
+        },
+        "status": "success"
+    }
+
+    >>> board_id = r.json()['data']['id']
+
+    >>> refresh('boards')
+
 Add a story::
 
     >>> r = client.post('/api/stories/', data=json.dumps({'text': 'story 1'}))

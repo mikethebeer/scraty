@@ -47,14 +47,13 @@ class Story(Base):
 
     def to_dict(self):
         tasks = Task.query.filter(Task.story_id == self.id).order_by(Task.state).all()
-        board = Board.query.filter(Board.id == self.board_id).one()
         return {
             "id": self.id,
             "text": self.text,
             "tasks": [t.to_dict() for t in tasks],
             "position": self.position,
             "link": self.link,
-            "board": board.to_dict(),
+            "board_id": self.board_id,
         }
 
 

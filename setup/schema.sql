@@ -3,7 +3,8 @@ CREATE TABLE IF NOT EXISTS "doc"."stories" (
    "id" STRING,
    "link" STRING,
    "position" INTEGER,
-   "text" STRING
+   "text" STRING,
+   "board_id" STRING
 );
 
 CREATE TABLE IF NOT EXISTS "doc"."tasks" (

@@ -1,3 +1,3 @@
 
-sqla_uri = 'crate://localhost:4200'
+sqla_uri = 'crate://crate:4200'
 sqla_params = {}

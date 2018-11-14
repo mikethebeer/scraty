@@ -1,6 +1,5 @@
 import json
 import logging
-import time
 from functools import wraps
 
 import sqlalchemy.orm.exc
@@ -31,7 +30,11 @@ class SocketHandler(WebSocketHandler):
 
     @classmethod
     def send_message(cls, object_type, action, obj):
-        message = {"action": action, "object_type": object_type, "object": obj.to_dict()}
+        message = {
+            "action": action,
+            "object_type": object_type,
+            "object": obj.to_dict(),
+        }
         message = json.dumps(message)
         for client in cls.clients:
             try:
@@ -76,7 +79,9 @@ def update_from_dict(obj, d):
         if hasattr(obj, key):
             setattr(obj, key, value)
         else:
-            raise ValueError("Object {0} doesn't have a property named '{1}'".format(obj, key))
+            raise ValueError(
+                "Object {0} doesn't have a property named '{1}'".format(obj, key)
+            )
     return obj
 
 

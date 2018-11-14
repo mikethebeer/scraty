@@ -1,17 +1,17 @@
+from datetime import datetime
+from uuid import uuid4
 
 import sqlalchemy as sa
-from sqlalchemy.types import Unicode, Integer, DateTime
-from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-from uuid import uuid4
-from datetime import datetime
+from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy.types import DateTime, Integer, Unicode
+from tornado.options import define, options, parse_command_line
 
-from .config import sqla_uri, sqla_params
+define("crate-host", default="localhost:4200", help="CrateDB host", type=str)
+parse_command_line()
 
-
-engine = sa.create_engine(sqla_uri, **sqla_params)
-Session = scoped_session(
-    sessionmaker(autocommit=False, autoflush=False, bind=engine))
+engine = sa.create_engine(f"crate://{options.crate_host}")
+Session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
 Base = declarative_base()
 
 
@@ -20,7 +20,7 @@ def gen_id():
 
 
 class Story(Base):
-    __tablename__ = 'stories'
+    __tablename__ = "stories"
 
     id = sa.Column(Unicode, primary_key=True, default=gen_id)
     text = sa.Column(Unicode)
@@ -29,24 +29,21 @@ class Story(Base):
     created = sa.Column(DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return '<Story({text})>'.format(text=self.text)
+        return "<Story({text})>".format(text=self.text)
 
     def to_dict(self):
-        tasks = (Task.query
-                 .filter(Task.story_id == self.id)
-                 .order_by(Task.state)
-                 .all())
+        tasks = Task.query.filter(Task.story_id == self.id).order_by(Task.state).all()
         return {
-            'id': self.id,
-            'text': self.text,
-            'tasks': [t.to_dict() for t in tasks],
-            'position': self.position,
-            'link': self.link,
+            "id": self.id,
+            "text": self.text,
+            "tasks": [t.to_dict() for t in tasks],
+            "position": self.position,
+            "link": self.link,
         }
 
 
 class Task(Base):
-    __tablename__ = 'tasks'
+    __tablename__ = "tasks"
 
     id = sa.Column(Unicode, primary_key=True, default=gen_id)
     text = sa.Column(Unicode)
@@ -56,15 +53,15 @@ class Task(Base):
     created = sa.Column(DateTime, default=datetime.utcnow)
 
     def __repr__(self):
-        return '<Task({text})>'.format(text=self.text[:20])
+        return "<Task({text})>".format(text=self.text[:20])
 
     def to_dict(self):
         return {
-            'id': self.id,
-            'text': self.text,
-            'user': self.user,
-            'state': self.state,
-            'story_id': self.story_id
+            "id": self.id,
+            "text": self.text,
+            "user": self.user,
+            "state": self.state,
+            "story_id": self.story_id,
         }
 
 

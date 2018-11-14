@@ -18,17 +18,23 @@ const styles = theme => ({
   },
   actions: {
     position: 'absolute',
+    top: 0,
+    right: 0,
+  },
+  userlabel: {
+    position: 'absolute',
     bottom: 5,
   },
   cardcontent: {
-    height: 50,
+    height: 83,
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   },
   icon: {
-    fontSize: 'medium',
+    fontSize: 'small',
   },
   button: {
-    width: 'auto',
-    height: 'auto',
+    padding: '0',
   },
   droptarget: {
     height: '100%',
@@ -38,14 +44,15 @@ const styles = theme => ({
 class TaskGrid extends Component {
   state = {
     open: false,
+    open_task: null,
   }
 
-  handleClickOpen = () => {
-    this.setState({open: true})
+  handleClickOpen = (task) => {
+    this.setState({open: true, open_task: task})
   }
 
   handleClose = () => {
-    this.setState({open: false})
+    this.setState({open: false, open_task: null})
   }
 
   render() {
@@ -56,28 +63,30 @@ class TaskGrid extends Component {
       return storyTasks.push(
         <DragDropContainer key={task.id} targetKey={task.story_id} dragData={task}>
           <Card className={classes.card}>
-            <CardContent className={classes.cardcontent}>
-              <Typography variant="caption">
-                <div>{task.text}</div>
-              </Typography>
-            </CardContent>
             <CardActions className={classes.actions}>
-              <Chip label={task.user} style={chipColor} />
-              <IconButton aria-label="Edit" onClick={this.handleClickOpen} className={classes.button}>
+              <IconButton aria-label="Edit" onClick={() => this.handleClickOpen(task)} className={classes.button}>
                 <EditIcon className={classes.icon}/>
               </IconButton>
               <IconButton aria-label="Delete" onClick={() => onDelete(task)} className={classes.button}>
                 <DeleteIcon className={classes.icon}/>
               </IconButton>
             </CardActions>
+            <CardContent className={classes.cardcontent}>
+              <Typography variant="caption">
+                <div>{task.text}</div>
+              </Typography>
+            </CardContent>
+            <CardActions className={classes.userlabel}>
+              <Chip label={task.user} style={chipColor} />
+            </CardActions>
           </Card>
-          <TaskDialog open={this.state.open} onClose={this.handleClose} task={task} story_id={task.story_id}/>
         </DragDropContainer>
       )
     })
     return(
       <div className={classes.droptarget}>
         {storyTasks}
+        <TaskDialog open={this.state.open} onClose={this.handleClose} task={this.state.open_task}/>
       </div>
     )
   }

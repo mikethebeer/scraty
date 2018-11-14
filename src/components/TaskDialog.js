@@ -19,16 +19,18 @@ class TaskDialog extends Component {
     event.preventDefault()   // avoid reload
     const data = new FormData(event.target)
     let url = HTTP_BACKEND_URL + '/api/tasks/'
+    let story_id = this.props.story_id
     if (this.props.task) {
       // update
       url += this.props.task.id
+      story_id = this.props.task.story_id
     }
     fetch(url, {
       method: 'POST',
       body: JSON.stringify({
         "text": data.get('task-text'),
         "user": data.get('task-user'),
-        "story_id": this.props.story_id,
+        "story_id": story_id,
       }),
     }).then(response => response.json())
     .then(data => {
@@ -38,7 +40,7 @@ class TaskDialog extends Component {
   }
 
   render() {
-    const { classes, onClose, onClick, task, story_id, dispatch, ...other } = this.props
+    const { classes, onClose, onClick, task, dispatch, ...other } = this.props
     return (
       <Dialog onClose={this.handleClose} {...other}>
         <DialogTitle>Task</DialogTitle>
@@ -81,7 +83,6 @@ TaskDialog.propTypes = {
   onClose: PropTypes.func,
   onClick: PropTypes.func,
   task: PropTypes.object,
-  story_id: PropTypes.string.isRequired,
 }
 
 export default connect()(TaskDialog)

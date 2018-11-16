@@ -1,0 +1,36 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: crate
+  namespace: scraty
+  labels:
+    app: crate
+spec:
+  ports:
+  - port: 4200
+    name: http
+  - port: 4300
+    name: transport
+  - port: 5432
+    name: postgres
+  selector:
+    app: crate
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: scraty
+  namespace: scraty
+  labels:
+    app: scraty
+spec:
+  ports:
+  - port: 8080
+    name: api
+  - port: 443
+    targetPort: 80
+    name: frontend
+  selector:
+    app: scraty

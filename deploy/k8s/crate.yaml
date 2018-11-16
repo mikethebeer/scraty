@@ -1,0 +1,103 @@
+kind: StatefulSet
+apiVersion: "apps/v1"
+metadata:
+  name: crate
+  namespace: scraty
+spec:
+  serviceName: crate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crate
+  template:
+    metadata:
+      labels:
+        app: crate
+      annotations:
+        pod.alpha.kubernetes.io/initialized: "true"
+    spec:
+      initContainers:
+      - name: init-sysctl
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        command: ["sysctl", "-w", "vm.max_map_count=262144"]
+        securityContext:
+          privileged: true
+      containers:
+      - name: crate
+        image: crate/crate:3.1.2
+        command:
+        - /docker-entrypoint.sh
+        - -Cstats.enabled=true
+        - -Ccluster.name=${CLUSTER_NAME}
+        - -Cpath.data=/resource/${NAMESPACE}
+        - -Clicense.enterprise=true
+        - -Clicense.ident=836ddc69888dfe3b4de39023ce4df8bce3fa0163
+        - -Cprocessors=1
+        volumeMounts:
+        - mountPath: /resource
+          name: resource
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: 1
+        ports:
+        - containerPort: 4200
+          name: http
+        - containerPort: 4300
+          name: transport
+        - containerPort: 5432
+          name: postgres
+        env:
+        # Half the available memory.
+        - name: CRATE_HEAP_SIZE
+          value: "512m"
+        - name: EXPECTED_NODES
+          value: "1"
+        - name: CLUSTER_NAME
+          value: "scraty"
+        # Namespace is received from pods current namespace.
+        - name: NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+      volumes:
+      - name: resource
+        persistentVolumeClaim:
+          claimName: local-resource
+---
+
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: temp-pv-scraty
+  namespace: scraty
+  labels:
+    app: crate
+    volume-type: ssd
+spec:
+  storageClassName: crate-local
+  capacity:
+    storage: 256Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: /mnt/kubernetes/ssd1/scraty
+
+---
+
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: local-resource
+  namespace: scraty
+  labels:
+    app: crate
+    volume-type: ssd
+spec:
+  storageClassName: crate-local
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Gi

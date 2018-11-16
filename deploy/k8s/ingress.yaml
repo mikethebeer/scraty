@@ -1,0 +1,49 @@
+kind: Certificate
+apiVersion: certmanager.k8s.io/v1alpha1
+metadata:
+  name: scraty-tls
+  namespace: scraty
+spec:
+  secretName: scraty-tls
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer
+  commonName: scraty.bregenz.a1.cratedb-dev.cloud
+  acme:
+    config:
+    - http01:
+        ingressClass: nginx
+      domains:
+      - scraty.bregenz.a1.cratedb-dev.cloud
+
+---
+
+kind: Ingress
+apiVersion: extensions/v1beta1
+metadata:
+  annotations:
+    nginx.org/websocket-services: "ws-svc"
+    external-dns.alpha.kubernetes.io/hostname: scraty.bregenz.a1.cratedb-dev.cloud
+  name: scraty
+  namespace: scraty
+spec:
+  tls:
+  - hosts:
+    - scraty.bregenz.a1.cratedb-dev.cloud
+    secretName: scraty-tls
+  rules:
+  - host: scraty.bregenz.a1.cratedb-dev.cloud
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: scraty
+          servicePort: 443
+      - path: "/api/*"
+        backend:
+          serviceName: scraty
+          servicePort: 8080
+      - path: "/websocket"
+        backend:
+          serviceName: ws-svc
+          servicePort: 8080

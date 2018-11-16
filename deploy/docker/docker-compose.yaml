@@ -1,14 +1,14 @@
 version: '2.1'
 services:
   backend:
-    build: backend/
+    build: ../../backend/
     depends_on:
       crate:
         condition: service_healthy
     ports:
     - "8080:8080"
   frontend:
-    build: .
+    build: ../../.
     depends_on:
     - "backend"
     volumes:

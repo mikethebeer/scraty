@@ -1,0 +1,27 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: scraty
+  namespace: scraty
+  labels:
+    app: scraty
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scraty
+  template:
+    metadata:
+      labels:
+        app: scraty
+    spec:
+      containers:
+      - name: api
+        image: mikethebeer/scraty_backend
+        command:
+        - "app"
+        - "--crate-host=crate:4200"
+        imagePullPolicy: Always
+      - name: frontend
+        image: mikethebeer/scraty_frontend
+        imagePullPolicy: Always

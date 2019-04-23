@@ -5,6 +5,8 @@
 It uses [Crate](https://crate.io) as backend database for storage and the
 API can be served from a local machine or server that runs Python.
 
+![Dashboard](scraty.png)
+
 ## Development
 
 ### Backend DB

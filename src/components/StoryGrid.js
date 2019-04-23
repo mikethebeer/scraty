@@ -12,19 +12,17 @@ import Story from '../containers/Story'
 
 const styles = theme => ({
   head: {
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.main,
     color: theme.palette.common.white,
     fontSize: 16,
     fontFamily: 'Permanent Marker',
   },
   cell: {
-    borderLeft: '1px solid #303030',
-    borderTop: '8px solid #303030',
+    borderLeft: '1px solid #eaecee',
   },
   table: {
     minWidth: 700,
     height: 1,
-    backgroundColor: theme.palette.primary.dark,
   },
   card: {
     width: 200,

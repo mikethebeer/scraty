@@ -10,6 +10,7 @@ const styles = theme => ({
   card: {
     width: 180,
     padding: 0,
+    backgroundColor: "#eceff1",
   },
 })
 
@@ -31,7 +32,7 @@ class StoryCard extends Component {
     return(
       <Card className={classes.card}>
         <CardContent>
-          <Button variant="contained" size="small" color="primary" href={story.link}>{story.text}</Button>
+          <Button href={story.link}>{story.text}</Button>
         </CardContent>
         <CardActions>
           <IconButton aria-label="Edit" onClick={this.handleClickOpen}>
@@ -40,7 +41,7 @@ class StoryCard extends Component {
           <IconButton aria-label="Delete" onClick={() => onDelete(story)}>
             <DeleteIcon />
           </IconButton>
-          <AddTaskButton id={story.id} />
+          <AddTaskButton id={story.id} color="secondary" />
         </CardActions>
         <StoryDialog story={story} open={this.state.open} onClose={this.handleClose} />
       </Card>

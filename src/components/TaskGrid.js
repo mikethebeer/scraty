@@ -31,7 +31,7 @@ const styles = theme => ({
     textOverflow: 'ellipsis',
   },
   icon: {
-    fontSize: 'small',
+    fontSize: 'medium',
   },
   button: {
     padding: '0',
@@ -72,9 +72,7 @@ class TaskGrid extends Component {
               </IconButton>
             </CardActions>
             <CardContent className={classes.cardcontent}>
-              <Typography variant="caption">
-                <div>{task.text}</div>
-              </Typography>
+              <Typography>{task.text}</Typography>
             </CardContent>
             <CardActions className={classes.userlabel}>
               <Chip label={task.user} style={chipColor} />

@@ -10,7 +10,7 @@
     "react-dom": "^16.6.3",
     "react-drag-drop-container": "^6.1.1",
     "react-redux": "^5.1.1",
-    "react-scripts": "1.1.5",
+    "react-scripts": "^3.0.0",
     "redux": "^4.0.1",
     "typeface-permanent-marker": "0.0.54"
   },
@@ -23,5 +23,17 @@
   "devDependencies": {
     "eslint": "^5.9.0",
     "eslint-config-google": "^0.10.0"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }

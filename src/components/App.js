@@ -64,7 +64,7 @@ class App extends Component {
         <Fragment>
           <CssBaseline />
           <Typography variant="display1" color="secondary" className={classes.title} gutterBottom>Scraty</Typography>
-          <Typography variant="headline" className={classes.subtitle} gutterBottom>Scrum for Craties</Typography>
+          <Typography variant="headline" className={classes.subtitle} gutterBottom>Scrum for agile teams</Typography>
           <Grid container spacing={24}>
             <Grid item xs={12}>
               <StoryList />

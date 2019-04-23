@@ -21,7 +21,6 @@
     "eject": "react-scripts eject"
   },
   "devDependencies": {
-    "eslint": "^5.9.0",
     "eslint-config-google": "^0.10.0"
   },
   "browserslist": {

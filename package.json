@@ -9,6 +9,7 @@
     "react": "^16.6.3",
     "react-dom": "^16.6.3",
     "react-drag-drop-container": "^6.1.1",
+    "react-markdown-renderer": "^1.4.0",
     "react-redux": "^5.1.1",
     "react-scripts": "^3.0.0",
     "redux": "^4.0.1",

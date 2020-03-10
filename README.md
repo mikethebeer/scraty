@@ -34,14 +34,14 @@ app
 ### Frontend
 
 ```bash
-npm install
-npm start
+yarn
+yarn start
 ```
 
 ## Features / Todos
 
 - [x] Task synchronisation
-- [ ] Markdown support
+- [x] Markdown support
 - [ ] increment stars
 - [ ] multi select (drag & drop, delete, etc.)
 - [ ] keyboard shortcuts

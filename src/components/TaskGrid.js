@@ -3,17 +3,17 @@ import Card from '@material-ui/core/Card'
 import CardContent from '@material-ui/core/CardContent'
 import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
-import Typography from '@material-ui/core/Typography'
 import { withStyles } from '@material-ui/core/styles'
 import { CardActions, IconButton, Chip } from '@material-ui/core'
 import { DragDropContainer } from 'react-drag-drop-container'
 import TaskDialog from './TaskDialog'
 import toMaterialStyle from 'material-color-hash'
+import MarkdownRenderer from 'react-markdown-renderer';
 
 const styles = theme => ({
   card: {
     width: 150,
-    height: 130,
+    height: 'auto',
     margin: '5px 5px 5px 5px',
   },
   actions: {
@@ -22,11 +22,10 @@ const styles = theme => ({
     right: 0,
   },
   userlabel: {
-    position: 'absolute',
     bottom: 5,
   },
   cardcontent: {
-    height: 83,
+    height: 'auto',
     overflow: 'hidden',
     textOverflow: 'ellipsis',
   },
@@ -72,7 +71,7 @@ class TaskGrid extends Component {
               </IconButton>
             </CardActions>
             <CardContent className={classes.cardcontent}>
-              <Typography>{task.text}</Typography>
+              <MarkdownRenderer markdown={task.text} />
             </CardContent>
             <CardActions className={classes.userlabel}>
               <Chip label={task.user} style={chipColor} />
